@@ -1,3 +1,31 @@
+# Class files - not part of Pedro
 presentation.html
 tuesday.html
+
+# Environment & secrets
 .env
+.env.*
+*.key
+*.pem
+credentials.json
+secrets.json
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node (future-proofing)
+node_modules/
+npm-debug.log*
+
+# Build artifacts
+dist/
+build/
