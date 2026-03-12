@@ -35,6 +35,12 @@
     <button class="roll-btn" onclick="event.stopPropagation(); openRoller()">🎲 Roll</button>
   </section>
 
+  <!-- DAILY TASKS SHORTCUT -->
+  <button id="daily-btn" onclick="openDailyModal()">
+    <span class="daily-btn-label">📋 Favorite Dailies</span>
+    <span class="daily-btn-hint">Your daily task preferences for Pedro →</span>
+  </button>
+
   <!-- TASK LIST -->
   <div id="task-list"></div>
 
@@ -43,9 +49,53 @@
     <input type="text" id="task-text-input" placeholder="What needs doing?" autocomplete="off">
     <button class="input-btn btn-voice" id="voice-btn" onclick="toggleVoice()" title="Voice input">🎤</button>
     <button class="input-btn btn-photo" onclick="document.getElementById('photo-input').click()" title="Add photo">📷</button>
+    <button class="input-btn btn-suggest" onclick="openSuggestModal()" title="AI suggestions">💡</button>
     <button class="input-btn btn-add" onclick="addTaskFromInput()" title="Add task">+</button>
     <input type="file" id="photo-input" accept="image/*" capture="environment" onchange="handlePhoto(event)">
   </section>
+
+  <!-- FAVORITE DAILIES MODAL -->
+  <div id="daily-modal">
+    <div class="daily-content">
+      <div class="daily-handle"></div>
+      <div class="daily-title">📋 Favorite Dailies</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.5;">These are your preferred daily tasks — Pedro uses them to suggest what to tackle based on how you're feeling. Tap 🍉 on any task to adjust its difficulty.</div>
+
+      <div class="mood-row">
+        <span class="mood-label">For when I'm feeling:</span>
+        <div class="mood-picker">
+          <button class="mood-btn active" data-mood="all"   onclick="setMoodFilter('all')"  >📋 All</button>
+          <button class="mood-btn" data-mood="low"   onclick="setMoodFilter('low')"  >🌧️ Low</button>
+          <button class="mood-btn" data-mood="okay"  onclick="setMoodFilter('okay')" >🌤️ Okay</button>
+          <button class="mood-btn" data-mood="happy" onclick="setMoodFilter('happy')">✨ Happy</button>
+        </div>
+      </div>
+
+      <div id="all-favorites"></div>
+      <div id="custom-favorites"></div>
+
+      <div id="add-custom-area">
+        <button id="add-custom-btn" class="daily-edit-toggle" onclick="showAddCustomForm()">＋ Add your own</button>
+        <div id="add-custom-form" style="display:none;">
+          <div class="custom-form-row">
+            <input type="text" id="custom-task-input" class="custom-task-input" placeholder="⭐ Name your task..." maxlength="60">
+            <div class="diff-editor visible">
+              <button class="diff-stepper" onclick="changeNewDiff(-1)">−</button>
+              <span id="new-diff-display">🍉</span>
+              <button class="diff-stepper" onclick="changeNewDiff(+1)">+</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button class="daily-edit-toggle" style="flex:1;" onclick="saveCustomTask()">Save</button>
+            <button class="daily-edit-toggle" style="flex:1;" onclick="hideAddCustomForm()">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <button id="done-editing-btn" class="daily-edit-toggle" onclick="toggleEditDiff()" style="display:none;">✅ Done editing difficulties</button>
+      <button class="daily-close" onclick="closeDailyModal()">close</button>
+    </div>
+  </div>
 
   <!-- ROLLER MODAL -->
   <div id="roller-modal">
@@ -57,6 +107,33 @@
       <button class="roller-spin-btn" id="spin-btn" onclick="spinRoller()">SPIN!</button>
       <br>
       <button class="roller-close" onclick="closeRoller()">close</button>
+    </div>
+  </div>
+
+  <!-- PERSONALITY SURVEY MODAL -->
+  <div id="survey-modal">
+    <div class="survey-content">
+      <div class="survey-header">
+        <span class="survey-emoji" id="survey-emoji">🦝</span>
+        <span class="survey-name" id="survey-name">Pedro</span>
+        <span class="survey-subtitle">wants to get to know you</span>
+      </div>
+      <div class="survey-chat" id="survey-chat"></div>
+      <div class="survey-input-row" id="survey-input-row">
+        <input type="text" id="survey-input" class="survey-input" placeholder="Type your answer..." autocomplete="off">
+        <button class="survey-send-btn" onclick="submitSurveyAnswer()">→</button>
+      </div>
+      <button class="survey-skip-btn" onclick="skipSurvey()">skip for now</button>
+    </div>
+  </div>
+
+  <!-- AI SUGGESTIONS MODAL -->
+  <div id="suggest-modal">
+    <div class="suggest-content">
+      <div class="daily-handle"></div>
+      <div class="daily-title" id="suggest-title">💡 Suggested Tasks</div>
+      <div id="suggest-list" style="min-height: 60px;"></div>
+      <button class="daily-close" onclick="closeSuggestModal()">close</button>
     </div>
   </div>
 
@@ -314,6 +391,40 @@
             <input type="range" min="0" max="100" value="70" id="volume-slider" oninput="updateVolume(this.value)">
             <span id="volume-value" style="min-width: 35px; text-align: center; font-size: 13px; font-weight: 600;">70%</span>
           </div>
+        </div>
+      </div>
+
+      <!-- AI Personality -->
+      <div class="setting-group">
+        <h3>🤖 AI Personalities</h3>
+        <div class="setting-row">
+          <div class="setting-label">
+            <div class="setting-label-main">Enable AI Messages</div>
+            <div class="setting-label-sub">Personalities respond in-character using Claude AI, aware of your actual tasks</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="ai-personality-toggle" checked onchange="toggleSetting('aiPersonality', this.checked)">
+            <span class="toggle-slider"></span>
+          </div>
+        </div>
+        <div class="setting-row" style="flex-direction: column; align-items: stretch; gap: 8px;">
+          <div class="setting-label">
+            <div class="setting-label-main">Anthropic API Key</div>
+            <div class="setting-label-sub">Stored locally in your browser only. Never sent anywhere except Anthropic's API.</div>
+          </div>
+          <input type="password" id="api-key-input" placeholder="sk-ant-..." style="
+            background: var(--bg-input);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: var(--text-primary);
+            font-family: 'Nunito', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            outline: none;
+            width: 100%;
+            transition: border-color 0.2s;
+          " onfocus="this.style.borderColor='var(--accent-orange)'" onblur="this.style.borderColor='transparent'; saveApiKey(this.value)">
         </div>
       </div>
 
