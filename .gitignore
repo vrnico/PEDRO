@@ -1,31 +1,11 @@
-# Class files - not part of Pedro
 presentation.html
 tuesday.html
-
-# Environment & secrets
 .env
-.env.*
-*.key
-*.pem
-credentials.json
-secrets.json
 
-# OS files
-.DS_Store
-Thumbs.db
-desktop.ini
+# Windows metadata files
+*:Zone.Identifier
+*:mshield
 
-# Editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Node (future-proofing)
-node_modules/
-npm-debug.log*
-
-# Build artifacts
-dist/
-build/
+# Testing documentation (optional - can be committed if needed)
+INTEGRATION_TESTING_SUMMARY.md
+TESTING_CELEBRATIONS.md

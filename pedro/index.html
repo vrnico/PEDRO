@@ -10,868 +10,8 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/pedro-192.png">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
   <title>Pedro - Executive Dysfunction Relief</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg-dark: #1a0a2e;
-      --bg-card: #2a1a4e;
-      --bg-input: #3a2a5e;
-      --accent-orange: #ff6b35;
-      --accent-green: #4ecdc4;
-      --accent-pink: #ff6b9d;
-      --accent-yellow: #ffe66d;
-      --text-primary: #f0e6ff;
-      --text-secondary: #b8a9d4;
-      --text-muted: #7a6b9a;
-      --shadow: 0 4px 20px rgba(0,0,0,0.3);
-      --radius: 16px;
-      --safe-bottom: env(safe-area-inset-bottom, 0px);
-      --diff-1: #8ed8d0;
-      --diff-2: #8ed4a0;
-      --diff-3: #f5e285;
-      --diff-4: #f5c47a;
-      --diff-5: #f5a07a;
-    }
-
-    html, body {
-      height: 100%;
-      overflow: hidden;
-    }
-
-    body {
-      font-family: 'Nunito', sans-serif;
-      background: var(--bg-dark);
-      color: var(--text-primary);
-      display: flex;
-      flex-direction: column;
-      max-width: 600px;
-      margin: 0 auto;
-      position: relative;
-    }
-
-    /* ===== HEADER ===== */
-    #pedro-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px 20px 12px;
-      background: linear-gradient(135deg, #2a1a4e, #1a0a2e);
-      flex-shrink: 0;
-    }
-
-    .raccoon-icon {
-      font-size: 40px;
-      animation: pedro-walk 3s ease-in-out infinite;
-    }
-
-    @keyframes pedro-walk {
-      0%, 100% { transform: translateX(0) rotate(0deg); }
-      25% { transform: translateX(4px) rotate(3deg); }
-      75% { transform: translateX(-4px) rotate(-3deg); }
-    }
-
-    .header-text h1 {
-      font-size: 22px;
-      font-weight: 900;
-      background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1.1;
-    }
-
-    .header-text p {
-      font-size: 10px;
-      color: var(--text-muted);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    /* ===== PERSONALITY BANNER ===== */
-    #personality-banner {
-      background: var(--bg-card);
-      margin: 0 12px;
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      box-shadow: var(--shadow);
-      cursor: pointer;
-      transition: transform 0.2s;
-      flex-shrink: 0;
-    }
-
-    #personality-banner:active {
-      transform: scale(0.98);
-    }
-
-    .personality-emoji {
-      font-size: 36px;
-      flex-shrink: 0;
-    }
-
-    .personality-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .personality-name {
-      font-weight: 800;
-      font-size: 15px;
-      color: var(--accent-yellow);
-    }
-
-    .personality-quote {
-      font-size: 13px;
-      color: var(--text-secondary);
-      font-style: italic;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .roll-btn {
-      background: var(--accent-orange);
-      border: none;
-      color: white;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 800;
-      font-size: 13px;
-      padding: 8px 14px;
-      border-radius: 24px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-      flex-shrink: 0;
-    }
-
-    .roll-btn:hover { background: #e55a25; transform: scale(1.05); }
-
-    /* ===== TASK LIST ===== */
-    #task-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    #task-list:empty::after {
-      content: "No tasks yet! Add one below.";
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 15px;
-      margin-top: 60px;
-    }
-
-    .task-item {
-      background: var(--bg-card);
-      border-radius: 12px;
-      padding: 14px 16px;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      animation: slideIn 0.3s ease-out;
-      transition: opacity 0.3s, transform 0.3s;
-    }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-20px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .task-item.done {
-      opacity: 0.5;
-    }
-
-    .task-item.done .task-text {
-      text-decoration: line-through;
-    }
-
-    .task-check {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      border: 3px solid var(--accent-green);
-      background: transparent;
-      cursor: pointer;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      margin-top: 1px;
-      color: transparent;
-      font-size: 14px;
-    }
-
-    .task-check:hover { background: rgba(78,205,196,0.2); }
-    .task-item.done .task-check {
-      background: var(--accent-green);
-      color: white;
-    }
-
-    .task-content {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .task-text {
-      font-size: 15px;
-      font-weight: 600;
-      word-wrap: break-word;
-    }
-
-    .task-photo {
-      width: 100%;
-      max-height: 150px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin-top: 8px;
-    }
-
-    .task-time {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    /* ===== FAVORITE DAILIES BUTTON ===== */
-    #daily-btn {
-      margin: 8px 12px 0;
-      background: var(--bg-card);
-      border: 1px dashed rgba(142,216,208,0.4);
-      border-radius: 10px;
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      transition: background 0.2s;
-      flex-shrink: 0;
-    }
-
-    #daily-btn:active { background: #3a2a5e; }
-    .daily-btn-label { font-size: 13px; font-weight: 700; color: var(--diff-1); }
-    .daily-btn-hint { font-size: 11px; color: var(--text-muted); }
-
-    /* ===== FAVORITE DAILIES MODAL ===== */
-    #daily-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.8);
-      z-index: 100;
-      align-items: flex-end;
-      justify-content: center;
-      backdrop-filter: blur(8px);
-    }
-
-    #daily-modal.active { display: flex; }
-
-    .daily-content {
-      background: var(--bg-card);
-      border-radius: 24px 24px 0 0;
-      padding: 20px 16px 8px;
-      width: 100%;
-      max-width: 600px;
-      max-height: 85vh;
-      overflow-y: auto;
-      box-shadow: 0 -8px 40px rgba(0,0,0,0.5);
-    }
-
-    .daily-handle {
-      width: 40px; height: 4px;
-      background: var(--text-muted);
-      border-radius: 4px;
-      margin: 0 auto 16px;
-    }
-
-    .daily-title {
-      font-size: 17px;
-      font-weight: 900;
-      color: var(--accent-yellow);
-      margin-bottom: 12px;
-    }
-
-    /* Mood picker */
-    .mood-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
-    }
-
-    .mood-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-muted);
-      white-space: nowrap;
-    }
-
-    .mood-picker { display: flex; gap: 6px; }
-
-    .mood-btn {
-      background: var(--bg-input);
-      border: 2px solid transparent;
-      border-radius: 20px;
-      color: var(--text-secondary);
-      font-family: 'Nunito', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 5px 11px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .mood-btn:hover { border-color: var(--text-muted); }
-    .mood-btn.active { border-color: var(--accent-yellow); color: var(--accent-yellow); }
-
-    /* Diff group header inside all-favorites */
-    .diff-group { margin-bottom: 10px; }
-
-    .diff-group-header {
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-      padding-left: 4px;
-    }
-
-    /* Task rows (picks + all favorites) */
-    .daily-task-row {
-      background: rgba(255,255,255,0.05);
-      border-radius: 10px;
-      padding: 9px 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 5px;
-      border-left: 3px solid transparent;
-      transition: background 0.15s;
-    }
-
-    .daily-task-row[data-diff="1"] { border-left-color: var(--diff-1); }
-    .daily-task-row[data-diff="2"] { border-left-color: var(--diff-2); }
-    .daily-task-row[data-diff="3"] { border-left-color: var(--diff-3); }
-    .daily-task-row[data-diff="4"] { border-left-color: var(--diff-4); }
-    .daily-task-row[data-diff="5"] { border-left-color: var(--diff-5); }
-
-    .daily-task-row.done-today { background: rgba(142,216,208,0.12); }
-    .daily-task-row.done-today .daily-task-label { color: var(--diff-1); font-weight: 700; }
-
-    .daily-check {
-      width: 22px; height: 22px;
-      border-radius: 50%;
-      border: 2px solid var(--text-muted);
-      background: transparent;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px;
-      color: transparent;
-      flex-shrink: 0;
-      transition: all 0.2s;
-    }
-
-    .daily-check:hover { border-color: var(--accent-green); }
-
-    .daily-task-row.done-today .daily-check {
-      background: var(--accent-green);
-      border-color: var(--accent-green);
-      color: white;
-    }
-
-    .daily-task-emoji { font-size: 16px; flex-shrink: 0; }
-    .daily-task-label { flex: 1; font-size: 13px; font-weight: 600; color: var(--text-primary); min-width: 0; }
-
-    .diff-badge {
-      font-size: 11px;
-      color: var(--text-muted);
-      font-weight: 700;
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-
-    .diff-badge-tap { cursor: pointer; }
-    .diff-badge-tap:hover { color: var(--accent-orange); }
-
-    /* Edit mode stepper */
-    .diff-editor { display: none; align-items: center; gap: 3px; flex-shrink: 0; }
-    .diff-editor.visible { display: flex; }
-
-    .diff-stepper {
-      background: var(--bg-card);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 5px;
-      color: var(--text-secondary);
-      font-family: 'Nunito', sans-serif;
-      font-size: 14px; font-weight: 700;
-      width: 22px; height: 22px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.15s;
-    }
-
-    .diff-stepper:hover { background: var(--accent-orange); color: white; border-color: var(--accent-orange); }
-
-    /* Bottom buttons */
-    .daily-edit-toggle {
-      background: none;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
-      color: var(--text-muted);
-      font-family: 'Nunito', sans-serif;
-      font-weight: 700;
-      font-size: 12px;
-      cursor: pointer;
-      padding: 7px 14px;
-      width: 100%;
-      margin-top: 10px;
-      transition: all 0.2s;
-    }
-
-    .daily-edit-toggle:hover, .daily-edit-toggle.active {
-      border-color: var(--accent-orange);
-      color: var(--accent-orange);
-    }
-
-    .daily-close {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-family: 'Nunito', sans-serif;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      padding: 12px;
-      width: 100%;
-      margin-top: 2px;
-    }
-
-    /* ===== CUSTOM TASK FORM ===== */
-    .custom-form-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .custom-task-input {
-      flex: 1;
-      background: var(--bg-input);
-      border: 2px solid transparent;
-      border-radius: 10px;
-      padding: 9px 12px;
-      color: var(--text-primary);
-      font-family: 'Nunito', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      outline: none;
-      transition: border-color 0.2s;
-      min-width: 0;
-    }
-
-    .custom-task-input::placeholder { color: var(--text-muted); }
-    .custom-task-input:focus { border-color: var(--accent-orange); }
-
-    #add-custom-area { margin-top: 12px; }
-
-    .custom-task-row-delete {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 16px;
-      cursor: pointer;
-      padding: 4px 6px;
-      flex-shrink: 0;
-      transition: color 0.2s;
-      line-height: 1;
-    }
-
-    .custom-task-row-delete:hover { color: var(--accent-pink); }
-
-    #new-diff-display {
-      font-size: 12px;
-      white-space: nowrap;
-      min-width: 40px;
-      text-align: center;
-    }
-
-    .task-delete {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 18px;
-      cursor: pointer;
-      padding: 4px;
-      flex-shrink: 0;
-      transition: color 0.2s;
-    }
-
-    .task-delete:hover { color: var(--accent-pink); }
-
-    /* ===== INPUT BAR ===== */
-    #task-input {
-      display: flex;
-      gap: 8px;
-      padding: 12px;
-      padding-bottom: calc(12px + var(--safe-bottom));
-      background: var(--bg-card);
-      border-top: 1px solid rgba(255,255,255,0.05);
-      flex-shrink: 0;
-    }
-
-    #task-text-input {
-      flex: 1;
-      background: var(--bg-input);
-      border: 2px solid transparent;
-      border-radius: 12px;
-      padding: 12px 16px;
-      color: var(--text-primary);
-      font-family: 'Nunito', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    #task-text-input::placeholder { color: var(--text-muted); }
-    #task-text-input:focus { border-color: var(--accent-orange); }
-
-    .input-btn {
-      width: 46px;
-      height: 46px;
-      border-radius: 12px;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      flex-shrink: 0;
-    }
-
-    .input-btn:active { transform: scale(0.9); }
-
-    .btn-voice {
-      background: var(--accent-green);
-      color: white;
-    }
-
-    .btn-voice.listening {
-      animation: pulse 1s ease-in-out infinite;
-      background: var(--accent-pink);
-    }
-
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,157,0.5); }
-      50% { box-shadow: 0 0 0 12px rgba(255,107,157,0); }
-    }
-
-    .btn-photo {
-      background: var(--accent-pink);
-      color: white;
-    }
-
-    .btn-add {
-      background: var(--accent-orange);
-      color: white;
-      font-size: 24px;
-    }
-
-    /* ===== ROLLER MODAL ===== */
-    #roller-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.8);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(8px);
-    }
-
-    #roller-modal.active { display: flex; }
-
-    .roller-content {
-      background: var(--bg-card);
-      border-radius: 24px;
-      padding: 32px;
-      text-align: center;
-      width: 85%;
-      max-width: 360px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    }
-
-    .roller-title {
-      font-size: 20px;
-      font-weight: 900;
-      margin-bottom: 24px;
-      color: var(--accent-yellow);
-    }
-
-    .roller-display {
-      font-size: 64px;
-      height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 8px;
-      transition: transform 0.1s;
-    }
-
-    .roller-name {
-      font-size: 22px;
-      font-weight: 800;
-      margin-bottom: 8px;
-      min-height: 30px;
-      color: var(--text-primary);
-    }
-
-    .roller-greeting {
-      font-size: 14px;
-      color: var(--text-secondary);
-      font-style: italic;
-      min-height: 42px;
-      margin-bottom: 24px;
-    }
-
-    .roller-spin-btn {
-      background: linear-gradient(135deg, var(--accent-orange), var(--accent-pink));
-      border: none;
-      color: white;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 900;
-      font-size: 18px;
-      padding: 14px 40px;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .roller-spin-btn:hover { transform: scale(1.05); }
-    .roller-spin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .roller-close {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 14px;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 16px;
-      padding: 8px;
-    }
-
-    /* ===== TOAST ===== */
-    #toast {
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: var(--bg-card);
-      border: 2px solid var(--accent-green);
-      border-radius: 16px;
-      padding: 12px 20px;
-      max-width: 320px;
-      text-align: center;
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-primary);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-      z-index: 50;
-      opacity: 0;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      pointer-events: none;
-    }
-
-    #toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    /* ===== SCROLLBAR ===== */
-    #task-list::-webkit-scrollbar { width: 4px; }
-    #task-list::-webkit-scrollbar-track { background: transparent; }
-    #task-list::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
-
-    /* ===== HIDDEN FILE INPUT ===== */
-    #photo-input { display: none; }
-
-    /* ===== PRIVACY CONSENT MODAL ===== */
-    #privacy-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.9);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(8px);
-      padding: 20px;
-    }
-
-    #privacy-modal.active { display: flex; }
-
-    .privacy-content {
-      background: var(--bg-card);
-      border-radius: 24px;
-      padding: 28px 24px;
-      max-width: 420px;
-      width: 100%;
-      max-height: 85vh;
-      overflow-y: auto;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    }
-
-    .privacy-content h2 {
-      font-size: 20px;
-      font-weight: 900;
-      color: var(--accent-yellow);
-      margin-bottom: 4px;
-    }
-
-    .privacy-content h3 {
-      font-size: 15px;
-      font-weight: 800;
-      color: var(--accent-orange);
-      margin-top: 16px;
-      margin-bottom: 6px;
-    }
-
-    .privacy-content p, .privacy-content li {
-      font-size: 13px;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin-bottom: 8px;
-    }
-
-    .privacy-content ul {
-      padding-left: 18px;
-      margin-bottom: 8px;
-    }
-
-    .privacy-section {
-      background: var(--bg-input);
-      border-radius: 12px;
-      padding: 14px;
-      margin: 12px 0;
-    }
-
-    .privacy-section.warning {
-      border: 1px solid var(--accent-orange);
-    }
-
-    .consent-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px 0;
-      border-top: 1px solid rgba(255,255,255,0.05);
-    }
-
-    .consent-toggle label {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-primary);
-      flex: 1;
-    }
-
-    .consent-toggle small {
-      display: block;
-      font-weight: 400;
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    .toggle-switch {
-      position: relative;
-      width: 48px;
-      height: 26px;
-      flex-shrink: 0;
-      cursor: pointer;
-    }
-
-    .toggle-switch input {
-      position: absolute;
-      opacity: 0;
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      cursor: pointer;
-      z-index: 2;
-    }
-
-    .toggle-slider {
-      position: absolute;
-      inset: 0;
-      background: var(--text-muted);
-      border-radius: 26px;
-      cursor: pointer;
-      transition: 0.3s;
-      z-index: 1;
-    }
-
-    .toggle-slider::before {
-      content: '';
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      left: 3px;
-      bottom: 3px;
-      background: white;
-      border-radius: 50%;
-      transition: 0.3s;
-    }
-
-    .toggle-switch input:checked + .toggle-slider {
-      background: var(--accent-green);
-    }
-
-    .toggle-switch input:checked + .toggle-slider::before {
-      transform: translateX(22px);
-    }
-
-    .privacy-accept-btn {
-      width: 100%;
-      background: linear-gradient(135deg, var(--accent-orange), var(--accent-pink));
-      border: none;
-      color: white;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 900;
-      font-size: 16px;
-      padding: 14px;
-      border-radius: 14px;
-      cursor: pointer;
-      margin-top: 16px;
-      transition: transform 0.2s;
-    }
-
-    .privacy-accept-btn:hover { transform: scale(1.02); }
-
-    .privacy-link {
-      display: block;
-      text-align: center;
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--text-muted);
-      cursor: pointer;
-      text-decoration: underline;
-    }
-  </style>
 </head>
 <body>
 
@@ -882,6 +22,7 @@
       <h1>PEDRO</h1>
       <p>Personal Executive Dysfunction Relief Operator</p>
     </div>
+    <button class="settings-btn" onclick="openSettings()" title="Settings">⚙️</button>
   </header>
 
   <!-- PERSONALITY BANNER -->
@@ -908,6 +49,7 @@
     <input type="text" id="task-text-input" placeholder="What needs doing?" autocomplete="off">
     <button class="input-btn btn-voice" id="voice-btn" onclick="toggleVoice()" title="Voice input">🎤</button>
     <button class="input-btn btn-photo" onclick="document.getElementById('photo-input').click()" title="Add photo">📷</button>
+    <button class="input-btn btn-suggest" onclick="openSuggestModal()" title="AI suggestions">💡</button>
     <button class="input-btn btn-add" onclick="addTaskFromInput()" title="Add task">+</button>
     <input type="file" id="photo-input" accept="image/*" capture="environment" onchange="handlePhoto(event)">
   </section>
@@ -968,6 +110,33 @@
     </div>
   </div>
 
+  <!-- PERSONALITY SURVEY MODAL -->
+  <div id="survey-modal">
+    <div class="survey-content">
+      <div class="survey-header">
+        <span class="survey-emoji" id="survey-emoji">🦝</span>
+        <span class="survey-name" id="survey-name">Pedro</span>
+        <span class="survey-subtitle">wants to get to know you</span>
+      </div>
+      <div class="survey-chat" id="survey-chat"></div>
+      <div class="survey-input-row" id="survey-input-row">
+        <input type="text" id="survey-input" class="survey-input" placeholder="Type your answer..." autocomplete="off">
+        <button class="survey-send-btn" onclick="submitSurveyAnswer()">→</button>
+      </div>
+      <button class="survey-skip-btn" onclick="skipSurvey()">skip for now</button>
+    </div>
+  </div>
+
+  <!-- AI SUGGESTIONS MODAL -->
+  <div id="suggest-modal">
+    <div class="suggest-content">
+      <div class="daily-handle"></div>
+      <div class="daily-title" id="suggest-title">💡 Suggested Tasks</div>
+      <div id="suggest-list" style="min-height: 60px;"></div>
+      <button class="daily-close" onclick="closeSuggestModal()">close</button>
+    </div>
+  </div>
+
   <!-- PRIVACY CONSENT MODAL -->
   <div id="privacy-modal">
     <div class="privacy-content">
@@ -1023,1017 +192,249 @@
   <!-- TOAST -->
   <div id="toast"></div>
 
-<script>
-// ============================================================
-// PERSONALITIES
-// ============================================================
-const PERSONALITIES = [
-  {
-    name: "Gordon Ramsay",
-    emoji: "👨‍🍳",
-    greeting: "Right then, let's get this day sorted, shall we?",
-    encourage: [
-      "That task is RAAWW! Get it done!",
-      "Move your backside, this won't finish itself!",
-      "Come on, you're better than this!",
-      "Focus! Perfection takes effort!",
-      "This task needs passion, not excuses!"
-    ],
-    praise: [
-      "Finally! Beautiful! Stunning!",
-      "Now THAT is what I'm talking about!",
-      "Gorgeous work, absolutely gorgeous!",
-      "You've earned your Michelin star today!",
-      "That's done properly. Well done, you."
-    ]
-  },
-  {
-    name: "Bob Ross",
-    emoji: "🎨",
-    greeting: "There are no mistakes, only happy little tasks.",
-    encourage: [
-      "Let's add a happy little checkmark here...",
-      "This task is just waiting for a friend — you!",
-      "Take your time, enjoy the process.",
-      "Every task starts with a single brushstroke.",
-      "You've got all the talent you need right there."
-    ],
-    praise: [
-      "And just like that, a happy little task is done!",
-      "See? You made that look easy!",
-      "That's a masterpiece of productivity!",
-      "Beautiful. Just beautiful.",
-      "Look at that! You did that. Be proud."
-    ]
-  },
-  {
-    name: "Snoop Dogg",
-    emoji: "🐕",
-    greeting: "Fo shizzle, let's get productizzle.",
-    encourage: [
-      "Drop it like it's hot — that task, I mean.",
-      "Keep it real, keep it movin'.",
-      "Ain't no thang but a chicken wang. Do it.",
-      "Stay smooth, stay focused, ya dig?",
-      "One task at a time, cuz. We got this."
-    ],
-    praise: [
-      "That's how we do it, baby!",
-      "Smooth like butter. Task crushed.",
-      "You a boss. Certified.",
-      "Laid back — with my mind on my tasks and my tasks on my mind.",
-      "D-O-N-E. That spells done, nephew."
-    ]
-  },
-  {
-    name: "David Attenborough",
-    emoji: "🦁",
-    greeting: "And here we observe the human, preparing to be remarkably productive.",
-    encourage: [
-      "The task, though daunting, awaits completion...",
-      "Observe: a challenge in its natural habitat.",
-      "With patience and persistence, even the greatest tasks fall.",
-      "The human must now summon its extraordinary focus.",
-      "A remarkable opportunity for accomplishment presents itself."
-    ],
-    praise: [
-      "Extraordinary. A task completed in its prime.",
-      "Magnificent. Nature's productivity at its finest.",
-      "And with that, the human proves its remarkable capability.",
-      "Quite remarkable. Simply breathtaking.",
-      "The cycle of productivity continues, beautifully."
-    ]
-  },
-  {
-    name: "Mr. Rogers",
-    emoji: "👔",
-    greeting: "It's a beautiful day in the neighborhood for getting things done.",
-    encourage: [
-      "I believe in you, neighbor.",
-      "You're special just as you are, and you CAN do this.",
-      "Would you like to try this task? I know you can.",
-      "Sometimes the bravest thing is just to start.",
-      "I'm proud of you for trying, neighbor."
-    ],
-    praise: [
-      "I knew you could do it. I'm so proud of you.",
-      "You've made this neighborhood a better place!",
-      "That took courage, and you did it beautifully.",
-      "You are a wonderful person, and you proved it today.",
-      "I like you just the way you are — especially now!"
-    ]
-  },
-  {
-    name: "Samuel L. Jackson",
-    emoji: "😎",
-    greeting: "Enough is ENOUGH! Let's get these tasks DONE!",
-    encourage: [
-      "DO IT. I dare you. I double dare you!",
-      "Say 'later' ONE MORE TIME...",
-      "Get. It. Done. Mothertasker.",
-      "The path of productivity is beset on all sides. Walk it.",
-      "I have HAD IT with these procrastinated tasks!"
-    ],
-    praise: [
-      "Now THAT'S what I call a tasty completion!",
-      "Mmm-mmm! That IS a good task done!",
-      "Yes you did! YES. YOU. DID.",
-      "Hold on to your butts — that was impressive!",
-      "You are one bad dude. Respect."
-    ]
-  },
-  {
-    name: "Dolly Parton",
-    emoji: "🦋",
-    greeting: "Well hi there, sugar! Let's make today sparkle!",
-    encourage: [
-      "You're workin' 9 to 5, honey! Keep it up!",
-      "If you want the rainbow, you gotta put up with the rain — and this task.",
-      "You're tougher than you think, darlin'!",
-      "Butterflies don't just appear — they work for those wings!",
-      "Sugar, this task ain't gonna know what hit it!"
-    ],
-    praise: [
-      "Well look at YOU, gettin' things done!",
-      "Honey, you just sparkled all over that task!",
-      "Dolly is PROUD! You did amazing!",
-      "Now that's what I call a coat of many colors!",
-      "You shine brighter than rhinestones, baby!"
-    ]
-  },
-  {
-    name: "The Rock",
-    emoji: "💪",
-    greeting: "IT DOESN'T MATTER what's on your to-do list — WE'RE DOING IT ALL!",
-    encourage: [
-      "CAN YOU SMELL what this task is cookin'?!",
-      "Bring it! This task doesn't stand a chance!",
-      "Focus. Discipline. SMASH that task!",
-      "No alarm clock needed — your AMBITION wakes you up!",
-      "One more task. One more rep. LET'S GO!"
-    ],
-    praise: [
-      "FINALLY... The task... HAS BEEN... COMPLETED!",
-      "That's the People's Champion right there!",
-      "You just laid the smackdown on that task!",
-      "Iron sharpens iron. And YOU are SHARP.",
-      "If you hear it... it's the crowd ROARING for you!"
-    ]
-  },
-  {
-    name: "Steve Irwin",
-    emoji: "🐊",
-    greeting: "Crikey! What a beautiful day to tackle some tasks, mate!",
-    encourage: [
-      "Crikey, look at the size of that task! Beauty!",
-      "She's a beaut! Now let's wrangle her!",
-      "No worries, mate — just sneak up on it nice and easy.",
-      "Every creature deserves respect — even tough tasks!",
-      "Get in there, mate! You're a natural!"
-    ],
-    praise: [
-      "CRIKEY! You did it! What a legend!",
-      "Mate, that was absolutely bonzer!",
-      "You wrangled that one like a true wildlife warrior!",
-      "Gorgeous! Absolutely gorgeous work, mate!",
-      "The world is better because you finished that task!"
-    ]
-  },
-  {
-    name: "Gandalf",
-    emoji: "🧙",
-    greeting: "A wizard is never late... nor is your to-do list, precisely when I mean it to begin.",
-    encourage: [
-      "All we have to decide is what to do with the task given to us.",
-      "Even the smallest task can change the course of the day.",
-      "You shall not PASS... on this task!",
-      "Fly, you fool! To your task!",
-      "There is only one Lord of this list, and it is YOU."
-    ],
-    praise: [
-      "Well done! The quest is one step closer to completion.",
-      "You have shown your true quality today.",
-      "The board is set. The pieces are moving. And you are WINNING.",
-      "So passes another task. Well fought.",
-      "I knew there was more to you than meets the eye!"
-    ]
-  },
-  {
-    name: "Martha Stewart",
-    emoji: "🏡",
-    greeting: "Organization is the cornerstone of a beautiful life. Let's begin.",
-    encourage: [
-      "A well-organized task list is a good thing.",
-      "Excellence requires attention to detail. Start this task.",
-      "Think of it as curating your day — beautifully.",
-      "Every accomplished person started with a single task.",
-      "Presentation matters. Let's make this list pristine."
-    ],
-    praise: [
-      "It's a GOOD thing. A very good thing.",
-      "Beautifully executed. I expect nothing less.",
-      "Your productivity is as elegant as a well-set table.",
-      "Perfection. Martha approves.",
-      "That's how you turn a to-do into a ta-da!"
-    ]
-  },
-  {
-    name: "Guy Fieri",
-    emoji: "🔥",
-    greeting: "Welcome to FLAVORTOWN! Population: YOUR TASK LIST!",
-    encourage: [
-      "We're taking this task to FLAVORTOWN!",
-      "This is GANGSTER productivity right here!",
-      "Winner winner, task for dinner!",
-      "That's OUT OF BOUNDS good! Now finish it!",
-      "We're ROLLIN' OUT to crush this task!"
-    ],
-    praise: [
-      "That task just got a one-way ticket to DONETOWN!",
-      "Holy moly, stromboli! You CRUSHED it!",
-      "That's MONEY! Absolute MONEY!",
-      "You just took that task to the HALL OF FAME!",
-      "Triple D: Done, Destroyed, Demolished!"
-    ]
-  },
-  {
-    name: "Oprah",
-    emoji: "✨",
-    greeting: "You get a task! YOU get a task! EVERYBODY GETS TASKS DONE!",
-    encourage: [
-      "Live your best life — starting with this task!",
-      "The biggest adventure is your own potential. Start now.",
-      "Turn your wounds into wisdom, and your tasks into triumphs!",
-      "What I know for sure: you CAN do this.",
-      "Step into the fullness of who you are. Do the task."
-    ],
-    praise: [
-      "You get a COMPLETION! And it feels AMAZING!",
-      "THAT was your aha moment!",
-      "You are living your BEST productive life!",
-      "This is going in my Favorite Things list!",
-      "I KNEW you had it in you! I KNEW it!"
-    ]
-  },
-  {
-    name: "Shrek",
-    emoji: "🧅",
-    greeting: "Tasks are like onions — they have layers. Let's peel 'em!",
-    encourage: [
-      "Better out than in — get that task OUT of the list!",
-      "This is MY swamp... I mean, my task list!",
-      "What are you doing in my to-do list?! Oh wait, helping. Good.",
-      "Ogres finish tasks. End of story.",
-      "Do the task or I'll make waffles. Actually, both."
-    ],
-    praise: [
-      "That'll do, Donkey. That'll do.",
-      "I'm a real completer — just like a real ogre!",
-      "SOMEBODY once told me you'd finish that task!",
-      "Get outta my swamp! ...because you're DONE!",
-      "Better than a stack of fresh waffles. Well done."
-    ]
-  },
-  {
-    name: "Pedro the Raccoon",
-    emoji: "🦝",
-    greeting: "*walks in with dramatic music* ...I believe in you.",
-    encourage: [
-      "*stares at task intensely while walking in slow motion*",
-      "*raccoon confidence activated* You got this.",
-      "Remember: even a trash panda gets things done.",
-      "*dramatic Pedro walk toward the task*",
-      "Channel the Pedro energy. Walk toward that task."
-    ],
-    praise: [
-      "*slow dramatic clap* Beautiful. Just beautiful.",
-      "*walks away coolly* Another task vanquished.",
-      "The Pedro within you has been unleashed!",
-      "*tips tiny raccoon hat* Well done, friend.",
-      "That's what happens when you walk with PURPOSE."
-    ]
-  },
-  {
-    name: "Marie Kondo",
-    emoji: "🌸",
-    greeting: "Does this task spark joy? If not, let's complete it and move on!",
-    encourage: [
-      "Tidy your task list, tidy your mind.",
-      "Hold this task close — then complete it with gratitude.",
-      "Ask yourself: does finishing this spark joy? Yes. Always yes.",
-      "A clean list is a peaceful heart.",
-      "Thank the task for existing, then do it."
-    ],
-    praise: [
-      "This sparks SO much joy!",
-      "Your list is becoming beautifully tidy!",
-      "Thank you, task, for being completed. *bow*",
-      "A moment of gratitude for this accomplishment.",
-      "See how much lighter you feel? That's the magic."
-    ]
-  },
-  {
-    name: "Captain Jack Sparrow",
-    emoji: "🏴‍☠️",
-    greeting: "Why is the rum gone? ...Oh right, we have TASKS to do.",
-    encourage: [
-      "The problem is not the task; the problem is your attitude about the task.",
-      "Not all treasure is silver and gold — some is a finished to-do list.",
-      "You WILL remember this as the day you almost didn't finish your tasks.",
-      "Savvy? Just... do the task. Savvy.",
-      "I've got a jar of dirt! ...and a task to finish."
-    ],
-    praise: [
-      "You are without doubt the best task-completer I've ever seen!",
-      "Bring me that horizon... of completed tasks!",
-      "That's CAPTAIN Task-Completer to you!",
-      "The seas of productivity smile upon you today.",
-      "But you HAVE finished the task. *grins*"
-    ]
-  },
-  {
-    name: "Yoda",
-    emoji: "💚",
-    greeting: "Much to do, you have. Begin, we shall.",
-    encourage: [
-      "Do or do not. There is no 'later'.",
-      "The task awaits you, it does. Hmmmm.",
-      "Strong in the productivity, you are.",
-      "Size matters not. Complete the task, you must.",
-      "Patience you must have, young task-doer."
-    ],
-    praise: [
-      "Completed the task, you have. Proud, I am.",
-      "Strong with the force of productivity, you are!",
-      "Earned this moment of rest, you have.",
-      "The force of accomplishment, surrounds you it does.",
-      "A true Jedi of the to-do list, you have become."
-    ]
-  }
-];
+  <!-- SETTINGS MODAL -->
+  <div id="settings-modal" class="modal" onclick="if(event.target.id === 'settings-modal') closeSettings()">
+    <div class="modal-content settings-panel">
+      <h2>⚙️ Settings</h2>
 
-// ============================================================
-// FAVORITE DAILIES DATA
-// ============================================================
-const DAILY_TASKS = [
-  { emoji: '🛏️', label: 'Get out of bed',                  diff: 1 },
-  { emoji: '💧', label: 'Drink a glass of water',           diff: 1 },
-  { emoji: '🪟', label: 'Open a window',                    diff: 1 },
-  { emoji: '💊', label: 'Take medication',                  diff: 1 },
-  { emoji: '🦷', label: 'Brush teeth',                      diff: 2 },
-  { emoji: '👕', label: 'Get dressed',                      diff: 2 },
-  { emoji: '📱', label: 'Check messages',                   diff: 2 },
-  { emoji: '🍳', label: 'Eat breakfast',                    diff: 2 },
-  { emoji: '😊', label: 'Do one thing that makes me happy', diff: 2 },
-  { emoji: '🧘', label: 'Stretch',                          diff: 2 },
-  { emoji: '🚿', label: 'Shower',                           diff: 3 },
-  { emoji: '🍽️', label: 'Do the dishes',                   diff: 3 },
-  { emoji: '🚶', label: 'Walk',                             diff: 3 },
-  { emoji: '🌟', label: 'Pick goals for tomorrow',          diff: 3 },
-  { emoji: '🍲', label: 'Cook a meal',                      diff: 4 },
-  { emoji: '🧺', label: 'Do a load of laundry',             diff: 4 },
-  { emoji: '🧹', label: 'Tidy one space',                   diff: 4 },
-  { emoji: '🛒', label: 'Grocery run',                      diff: 5 },
-  { emoji: '💸', label: 'Pay a bill',                       diff: 5 },
-  { emoji: '📞', label: 'Make an appointment',              diff: 5 },
-];
-
-const DIFF_LABELS = {
-  1: { label: 'Very easy' },
-  2: { label: 'Easy' },
-  3: { label: 'Medium' },
-  4: { label: 'Takes some effort' },
-  5: { label: 'Big task' },
-};
-
-function diffDisplay(n) {
-  return '🍉'.repeat(n);
-}
-// ============================================================
-// STATE
-// ============================================================
-let state = {
-  tasks: [],
-  personality: null,
-  personalityDate: null,
-  dailies: {
-    mood: 'all',
-    done: [],
-    customDiff: {},
-    picks: [],
-    customTasks: []
-  }
-};
-
-function saveState() {
-  try {
-    localStorage.setItem('pedro-state', JSON.stringify(state));
-  } catch(e) { /* quota exceeded or unavailable */ }
-}
-
-function loadState() {
-  try {
-    const saved = localStorage.getItem('pedro-state');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      state.tasks = parsed.tasks || [];
-      state.personality = parsed.personality || null;
-      state.personalityDate = parsed.personalityDate || null;
-      const d = parsed.dailies || {};
-      state.dailies = {
-        mood:        d.mood        || 'all',
-        done:        d.done        || [],
-        customDiff:  d.customDiff  || {},
-        picks:       d.picks       || [],
-        customTasks: d.customTasks || []
-      };
-    }
-  } catch(e) { /* corrupted or unavailable */ }
-}
-
-// ============================================================
-// TASK MANAGEMENT
-// ============================================================
-function addTask(text, photoDataUrl) {
-  if (!text && !photoDataUrl) return;
-  const task = {
-    id: Date.now() + Math.random(),
-    text: text || '(photo task)',
-    done: false,
-    createdAt: new Date().toISOString(),
-    photo: photoDataUrl || null
-  };
-  state.tasks.unshift(task);
-  saveState();
-  renderTasks();
-
-  if (state.personality) {
-    const msgs = state.personality.encourage;
-    showToast(`${state.personality.emoji} ${msgs[Math.floor(Math.random() * msgs.length)]}`);
-  }
-}
-
-function toggleTask(id) {
-  const task = state.tasks.find(t => t.id === id);
-  if (!task) return;
-  task.done = !task.done;
-  saveState();
-  renderTasks();
-
-  if (task.done && state.personality) {
-    const msgs = state.personality.praise;
-    showToast(`${state.personality.emoji} ${msgs[Math.floor(Math.random() * msgs.length)]}`);
-  }
-}
-
-function deleteTask(id) {
-  state.tasks = state.tasks.filter(t => t.id !== id);
-  saveState();
-  renderTasks();
-}
-
-function renderTasks() {
-  const list = document.getElementById('task-list');
-  list.innerHTML = state.tasks.map(t => `
-    <div class="task-item ${t.done ? 'done' : ''}" data-id="${t.id}">
-      <button class="task-check" onclick="toggleTask(${t.id})">${t.done ? '✓' : ''}</button>
-      <div class="task-content">
-        <div class="task-text">${escapeHtml(t.text)}</div>
-        ${t.photo ? `<img class="task-photo" src="${t.photo}" alt="Task photo">` : ''}
-        <div class="task-time">${formatTime(t.createdAt)}</div>
+      <!-- Theme Selection -->
+      <div class="setting-group">
+        <h3>🎨 Theme</h3>
+        <div class="theme-options">
+          <div class="theme-option" data-theme="dark-cyberpunk" onclick="selectTheme(this)">
+            <div class="theme-colors">
+              <span style="background: #1a0a2e"></span>
+              <span style="background: #ff6b35"></span>
+              <span style="background: #4ecdc4"></span>
+              <span style="background: #ffe66d"></span>
+            </div>
+            <div class="theme-name">Dark Cyberpunk</div>
+          </div>
+          <div class="theme-option" data-theme="light-clean" onclick="selectTheme(this)">
+            <div class="theme-colors">
+              <span style="background: #f8f9fa"></span>
+              <span style="background: #ff6b6b"></span>
+              <span style="background: #4ecdc4"></span>
+              <span style="background: #ffc107"></span>
+            </div>
+            <div class="theme-name">Light & Clean</div>
+          </div>
+          <div class="theme-option" data-theme="nature" onclick="selectTheme(this)">
+            <div class="theme-colors">
+              <span style="background: #2d3e2e"></span>
+              <span style="background: #80a05d"></span>
+              <span style="background: #c9a847"></span>
+              <span style="background: #e8dcc4"></span>
+            </div>
+            <div class="theme-name">Nature & Calm</div>
+          </div>
+          <div class="theme-option" data-theme="sunset" onclick="selectTheme(this)">
+            <div class="theme-colors">
+              <span style="background: #2b1b3d"></span>
+              <span style="background: #ff6b35"></span>
+              <span style="background: #ff8c42"></span>
+              <span style="background: #ffc857"></span>
+            </div>
+            <div class="theme-name">Sunset Warmth</div>
+          </div>
+          <div class="theme-option" data-theme="ocean" onclick="selectTheme(this)">
+            <div class="theme-colors">
+              <span style="background: #0a1929"></span>
+              <span style="background: #4ecdc4"></span>
+              <span style="background: #00a8e8"></span>
+              <span style="background: #c8f4f9"></span>
+            </div>
+            <div class="theme-name">Ocean Breeze</div>
+          </div>
+        </div>
       </div>
-      <button class="task-delete" onclick="deleteTask(${t.id})">✕</button>
+
+      <!-- Celebration Master Toggle -->
+      <div class="setting-group">
+        <div class="setting-row">
+          <div class="setting-label">
+            <div class="setting-label-main">🎊 Enable Celebrations</div>
+            <div class="setting-label-sub">Show confetti and Pedro animations when completing tasks</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="celebrations-toggle" checked onchange="toggleSetting('celebrationsEnabled', this.checked)">
+            <span class="toggle-slider"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Celebration Timing -->
+      <div class="setting-group">
+        <h3>⏰ When to Celebrate</h3>
+        <div class="radio-group">
+          <div class="radio-option" data-value="smart" onclick="selectTiming(this)">
+            <div class="radio-circle"></div>
+            <div class="radio-label">
+              <div class="radio-label-main">Smart Mode</div>
+              <div class="radio-label-sub">Always: first & last task. Random: tasks in between.</div>
+            </div>
+          </div>
+          <div class="radio-option" data-value="every" onclick="selectTiming(this)">
+            <div class="radio-circle"></div>
+            <div class="radio-label">
+              <div class="radio-label-main">Every Task</div>
+              <div class="radio-label-sub">Maximum dopamine! Celebrate everything.</div>
+            </div>
+          </div>
+          <div class="radio-option" data-value="random" onclick="selectTiming(this)">
+            <div class="radio-circle"></div>
+            <div class="radio-label">
+              <div class="radio-label-main">Random (50% chance)</div>
+              <div class="radio-label-sub">Keeps it special and unexpected.</div>
+            </div>
+          </div>
+          <div class="radio-option" data-value="milestones" onclick="selectTiming(this)">
+            <div class="radio-circle"></div>
+            <div class="radio-label">
+              <div class="radio-label-main">Milestones Only</div>
+              <div class="radio-label-sub">Celebrate every 5 tasks completed.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Confetti Toggle -->
+      <div class="setting-group">
+        <div class="setting-row">
+          <div class="setting-label">
+            <div class="setting-label-main">🎊 Show Confetti</div>
+            <div class="setting-label-sub">Colorful particles burst on screen</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="confetti-toggle" checked onchange="toggleSetting('confettiEnabled', this.checked)">
+            <span class="toggle-slider"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pedro Animation Toggle -->
+      <div class="setting-group">
+        <div class="setting-row">
+          <div class="setting-label">
+            <div class="setting-label-main">🦝 Show Dancing Pedro</div>
+            <div class="setting-label-sub">Pedro walks across screen celebrating with you</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="pedro-toggle" checked onchange="toggleSetting('pedroEnabled', this.checked)">
+            <span class="toggle-slider"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sound Effects -->
+      <div class="setting-group">
+        <div class="setting-row">
+          <div class="setting-label">
+            <div class="setting-label-main">🔊 Play Sound Effects</div>
+            <div class="setting-label-sub">Audio feedback when completing tasks</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="sounds-toggle" checked onchange="toggleSetting('soundsEnabled', this.checked)">
+            <span class="toggle-slider"></span>
+          </div>
+        </div>
+
+        <!-- Sound Type Selector -->
+        <div class="sound-options">
+          <div class="sound-card" data-sound="chime" onclick="selectSound(this)">
+            <div class="sound-icon">🔔</div>
+            <div class="sound-name">Chime</div>
+            <button class="sound-preview-btn" onclick="event.stopPropagation(); playSound('chime', 70)">▶</button>
+          </div>
+          <div class="sound-card" data-sound="fanfare" onclick="selectSound(this)">
+            <div class="sound-icon">🎺</div>
+            <div class="sound-name">Fanfare</div>
+            <button class="sound-preview-btn" onclick="event.stopPropagation(); playSound('fanfare', 70)">▶</button>
+          </div>
+          <div class="sound-card" data-sound="pop" onclick="selectSound(this)">
+            <div class="sound-icon">💥</div>
+            <div class="sound-name">Pop</div>
+            <button class="sound-preview-btn" onclick="event.stopPropagation(); playSound('pop', 70)">▶</button>
+          </div>
+          <div class="sound-card" data-sound="coins" onclick="selectSound(this)">
+            <div class="sound-icon">🪙</div>
+            <div class="sound-name">Coins</div>
+            <button class="sound-preview-btn" onclick="event.stopPropagation(); playSound('coins', 70)">▶</button>
+          </div>
+          <div class="sound-card" data-sound="woohoo" onclick="selectSound(this)">
+            <div class="sound-icon">🎉</div>
+            <div class="sound-name">Woohoo</div>
+            <button class="sound-preview-btn" onclick="event.stopPropagation(); playSound('woohoo', 70)">▶</button>
+          </div>
+          <div class="sound-card" data-sound="random" onclick="selectSound(this)">
+            <div class="sound-icon">🎲</div>
+            <div class="sound-name">Random</div>
+            <button class="sound-preview-btn" onclick="event.stopPropagation(); playRandomSound()">▶</button>
+          </div>
+          <div class="sound-card" data-sound="none" onclick="selectSound(this)">
+            <div class="sound-icon">🔇</div>
+            <div class="sound-name">Silent</div>
+            <button class="sound-preview-btn" onclick="event.stopPropagation()">-</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Volume Control -->
+      <div class="setting-group">
+        <div class="setting-row">
+          <div class="setting-label">
+            <div class="setting-label-main">🔊 Sound Volume</div>
+            <div class="setting-label-sub">Adjust celebration sound volume</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 12px; opacity: 0.7;">🔉</span>
+            <input type="range" min="0" max="100" value="70" id="volume-slider" oninput="updateVolume(this.value)">
+            <span id="volume-value" style="min-width: 35px; text-align: center; font-size: 13px; font-weight: 600;">70%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Personality -->
+      <div class="setting-group">
+        <h3>🤖 AI Personalities</h3>
+        <div class="setting-row">
+          <div class="setting-label">
+            <div class="setting-label-main">Enable AI Messages</div>
+            <div class="setting-label-sub">Personalities respond in-character using Claude AI, aware of your actual tasks</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="ai-personality-toggle" checked onchange="toggleSetting('aiPersonality', this.checked)">
+            <span class="toggle-slider"></span>
+          </div>
+        </div>
+        <div class="setting-row" style="flex-direction: column; align-items: stretch; gap: 8px;">
+          <div class="setting-label">
+            <div class="setting-label-main">Anthropic API Key</div>
+            <div class="setting-label-sub">Stored locally in your browser only. Never sent anywhere except Anthropic's API.</div>
+          </div>
+          <input type="password" id="api-key-input" placeholder="sk-ant-..." style="
+            background: var(--bg-input);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: var(--text-primary);
+            font-family: 'Nunito', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            outline: none;
+            width: 100%;
+            transition: border-color 0.2s;
+          " onfocus="this.style.borderColor='var(--accent-orange)'" onblur="this.style.borderColor='transparent'; saveApiKey(this.value)">
+        </div>
+      </div>
+
+      <button class="modal-close-btn" onclick="closeSettings()">Close</button>
     </div>
-  `).join('');
-}
-
-function addTaskFromInput() {
-  const input = document.getElementById('task-text-input');
-  const text = input.value.trim();
-  if (!text && !pendingPhoto) return;
-  addTask(text, pendingPhoto);
-  input.value = '';
-  pendingPhoto = null;
-}
-
-// ============================================================
-// VOICE INPUT
-// ============================================================
-let recognition = null;
-let isListening = false;
-
-function toggleVoice() {
-  if (!voiceConsented) {
-    showToast('🎤 Voice input is disabled — check privacy settings');
-    return;
-  }
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    showToast('🎤 Voice input not supported in this browser');
-    return;
-  }
-
-  if (isListening) {
-    recognition.stop();
-    return;
-  }
-
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SpeechRecognition();
-  recognition.continuous = false;
-  recognition.interimResults = false;
-  recognition.lang = 'en-US';
-
-  const btn = document.getElementById('voice-btn');
-
-  recognition.onstart = () => {
-    isListening = true;
-    btn.classList.add('listening');
-  };
-
-  recognition.onresult = (event) => {
-    const text = event.results[0][0].transcript;
-    document.getElementById('task-text-input').value = text;
-  };
-
-  recognition.onend = () => {
-    isListening = false;
-    btn.classList.remove('listening');
-  };
-
-  recognition.onerror = () => {
-    isListening = false;
-    btn.classList.remove('listening');
-    showToast('🎤 Couldn\'t hear you, try again!');
-  };
-
-  recognition.start();
-}
-
-// ============================================================
-// PHOTO INPUT
-// ============================================================
-let pendingPhoto = null;
-
-function handlePhoto(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  const img = new Image();
-
-  img.onload = () => {
-    const maxSize = 400;
-    let w = img.width, h = img.height;
-    if (w > h) { if (w > maxSize) { h = h * maxSize / w; w = maxSize; } }
-    else { if (h > maxSize) { w = w * maxSize / h; h = maxSize; } }
-
-    canvas.width = w;
-    canvas.height = h;
-    ctx.drawImage(img, 0, 0, w, h);
-
-    pendingPhoto = canvas.toDataURL('image/jpeg', 0.7);
-    const input = document.getElementById('task-text-input');
-    if (!input.value.trim()) input.placeholder = '📷 Photo ready! Add a note or tap +';
-    showToast('📷 Photo attached! Add text or tap + to save.');
-  };
-
-  img.src = URL.createObjectURL(file);
-  event.target.value = '';
-}
-
-// ============================================================
-// PERSONALITY ROLLER
-// ============================================================
-function openRoller() {
-  document.getElementById('roller-modal').classList.add('active');
-}
-
-function closeRoller() {
-  document.getElementById('roller-modal').classList.remove('active');
-}
-
-function spinRoller() {
-  const btn = document.getElementById('spin-btn');
-  btn.disabled = true;
-
-  const emojiEl = document.getElementById('roller-emoji');
-  const nameEl = document.getElementById('roller-name');
-  const greetEl = document.getElementById('roller-greeting');
-
-  let count = 0;
-  const totalSpins = 25;
-  let delay = 60;
-
-  function spin() {
-    const p = PERSONALITIES[Math.floor(Math.random() * PERSONALITIES.length)];
-    emojiEl.textContent = p.emoji;
-    nameEl.textContent = p.name;
-    greetEl.textContent = '';
-    emojiEl.style.transform = `rotate(${(Math.random() - 0.5) * 30}deg)`;
-
-    count++;
-    if (count < totalSpins) {
-      delay += 15;
-      setTimeout(spin, delay);
-    } else {
-      // Final selection
-      const final = PERSONALITIES[Math.floor(Math.random() * PERSONALITIES.length)];
-      emojiEl.textContent = final.emoji;
-      emojiEl.style.transform = 'rotate(0deg) scale(1.2)';
-      nameEl.textContent = final.name;
-      greetEl.textContent = `"${final.greeting}"`;
-
-      state.personality = final;
-      state.personalityDate = new Date().toISOString().slice(0, 10);
-      saveState();
-      updatePersonalityBanner();
-
-      setTimeout(() => {
-        emojiEl.style.transform = 'rotate(0deg) scale(1)';
-        btn.disabled = false;
-      }, 500);
-    }
-  }
-
-  spin();
-}
-
-function updatePersonalityBanner() {
-  const p = state.personality;
-  if (p) {
-    document.getElementById('current-emoji').textContent = p.emoji;
-    document.getElementById('current-name').textContent = p.name;
-    document.getElementById('current-quote').textContent = `"${p.greeting}"`;
-  }
-}
-
-// ============================================================
-// UTILITIES
-// ============================================================
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-function formatTime(iso) {
-  const d = new Date(iso);
-  const now = new Date();
-  const diff = now - d;
-
-  if (diff < 60000) return 'just now';
-  if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-  if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-  return d.toLocaleDateString();
-}
-
-let toastTimeout;
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('show');
-  clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
-// ============================================================
-// PRIVACY & CONSENT
-// ============================================================
-let voiceConsented = false;
-
-function checkConsent() {
-  try {
-    const consent = localStorage.getItem('pedro-privacy-accepted');
-    if (!consent) {
-      document.getElementById('privacy-modal').classList.add('active');
-      return false;
-    }
-    voiceConsented = localStorage.getItem('pedro-voice-consent') === 'true';
-    return true;
-  } catch(e) {
-    return true; // if localStorage fails, just let them use the app
-  }
-}
-
-function acceptPrivacy() {
-  const voiceToggle = document.getElementById('voice-consent-toggle');
-  voiceConsented = voiceToggle.checked;
-
-  try {
-    localStorage.setItem('pedro-privacy-accepted', new Date().toISOString());
-    localStorage.setItem('pedro-voice-consent', voiceConsented.toString());
-  } catch(e) { /* storage unavailable */ }
-
-  document.getElementById('privacy-modal').classList.remove('active');
-  updateVoiceButton();
-}
-
-function showFullPrivacy() {
-  alert(
-    "PEDRO PRIVACY POLICY\n" +
-    "Last updated: 2026-03-11\n\n" +
-    "DATA STORAGE\n" +
-    "All task data, photos, and preferences are stored exclusively in your browser's localStorage. " +
-    "No data is transmitted to Pedro's developers or any third-party servers (except voice input, detailed below). " +
-    "Clearing your browser data will permanently delete all Pedro data.\n\n" +
-    "VOICE INPUT\n" +
-    "If enabled, voice input uses the Web Speech API built into your browser. " +
-    "Audio is transmitted to and processed by:\n" +
-    "• Google (Chrome, Edge, Samsung Internet)\n" +
-    "• Apple (Safari)\n" +
-    "Pedro does not control, store, or have access to your audio recordings. " +
-    "Audio processing is governed by the respective company's privacy policy. " +
-    "You can disable voice input at any time in the app.\n\n" +
-    "PHOTO INPUT\n" +
-    "Photos are resized to a maximum of 400px and stored as JPEG data URLs in localStorage. " +
-    "Photos never leave your device.\n\n" +
-    "ANALYTICS & TRACKING\n" +
-    "Pedro uses no analytics, cookies, tracking pixels, or third-party scripts.\n\n" +
-    "CHILDREN\n" +
-    "Pedro does not knowingly collect data from children. All data remains on-device.\n\n" +
-    "CONTACT\n" +
-    "For privacy questions, reach out to the project maintainers."
-  );
-}
-
-function updateVoiceButton() {
-  const btn = document.getElementById('voice-btn');
-  const speechSupported = ('webkitSpeechRecognition' in window) || ('SpeechRecognition' in window);
-
-  if (!speechSupported || !voiceConsented) {
-    btn.style.display = 'none';
-  } else {
-    btn.style.display = 'flex';
-  }
-}
-
-// ============================================================
-// FAVORITE DAILIES
-// ============================================================
-let editDiffMode = false;
-
-function getEffectiveDiff(task) {
-  return state.dailies.customDiff[task.label] || task.diff;
-}
-
-// TODO: used in Start Today feature — weighted lottery picks tasks by mood
-// function generatePicks(mood) {
-//   const weights = {
-//     low:   [0, 6, 3, 0, 0, 0],
-//     okay:  [0, 2, 4, 3, 1, 0],
-//     happy: [0, 1, 2, 4, 3, 1],
-//   };
-//   const w = weights[mood];
-//   const pool = DAILY_TASKS.filter(t => w[getEffectiveDiff(t)] > 0);
-//   const picks = [];
-//   const avail = [...pool];
-//   for (let i = 0; i < Math.min(4, avail.length); i++) {
-//     const total = avail.reduce((s, t) => s + w[getEffectiveDiff(t)], 0);
-//     let r = Math.random() * total;
-//     for (let j = 0; j < avail.length; j++) {
-//       r -= w[getEffectiveDiff(avail[j])];
-//       if (r <= 0) { picks.push(avail[j].label); avail.splice(j, 1); break; }
-//     }
-//   }
-//   state.dailies.picks = picks;
-//   state.dailies.mood = mood;
-//   state.dailies.date = new Date().toISOString().slice(0, 10);
-//   saveState();
-// }
-
-const MOOD_FILTER_RANGE = {
-  all:   [1, 2, 3, 4, 5],
-  low:   [1, 2],
-  okay:  [2, 3],
-  happy: [3, 4, 5],
-};
-
-function setMoodFilter(mood) {
-  state.dailies.mood = mood;
-  saveState();
-  renderDailyModal();
-}
-
-function toggleDailyDone(label) {
-  const idx = state.dailies.done.indexOf(label);
-  if (idx >= 0) {
-    state.dailies.done.splice(idx, 1);
-  } else {
-    state.dailies.done.push(label);
-    if (state.personality) {
-      const msgs = state.personality.praise;
-      showToast(`${state.personality.emoji} ${msgs[Math.floor(Math.random() * msgs.length)]}`);
-    }
-  }
-  saveState();
-  renderDailyModal();
-}
-
-function changeDiff(label, delta) {
-  const task = DAILY_TASKS.find(t => t.label === label);
-  if (!task) return;
-  const current = getEffectiveDiff(task);
-  const next = Math.max(1, Math.min(5, current + delta));
-  if (next === task.diff) {
-    delete state.dailies.customDiff[label];
-  } else {
-    state.dailies.customDiff[label] = next;
-  }
-  saveState();
-  renderDailyModal();
-}
-
-function toggleEditDiff() {
-  editDiffMode = !editDiffMode;
-  const doneBtn = document.getElementById('done-editing-btn');
-  if (doneBtn) doneBtn.style.display = editDiffMode ? 'block' : 'none';
-  renderDailyModal();
-}
-
-
-function buildTaskRow(task) {
-  const diff = getEffectiveDiff(task);
-  const isDone = state.dailies.done.includes(task.label);
-  const labelSafe = task.label.replace(/'/g, "\\'");
-  const isEditing = editDiffMode;
-  const badge = diffDisplay(diff);
-
-  const rightSide = isEditing
-    ? `<div class="diff-editor visible">
-         <button class="diff-stepper" onclick="changeDiff('${labelSafe}',-1)">−</button>
-         <span class="diff-badge">${badge}</span>
-         <button class="diff-stepper" onclick="changeDiff('${labelSafe}',+1)">+</button>
-       </div>`
-    : `<span class="diff-badge diff-badge-tap" onclick="toggleEditDiff()" title="Tap to edit difficulty">${badge}</span>`;
-
-  return `
-    <div class="daily-task-row ${isDone ? 'done-today' : ''}" data-diff="${diff}">
-      <button class="daily-check" onclick="toggleDailyDone('${labelSafe}')">${isDone ? '✓' : ''}</button>
-      <span class="daily-task-emoji">${task.emoji}</span>
-      <span class="daily-task-label">${task.label}</span>
-      ${rightSide}
-    </div>`;
-}
-
-function renderDailyModal() {
-  const mood = state.dailies.mood || 'all';
-  const allowedDiffs = MOOD_FILTER_RANGE[mood] || MOOD_FILTER_RANGE.all;
-
-  // Mood filter buttons
-  document.querySelectorAll('.mood-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.mood === mood);
-  });
-
-  // Preset tasks filtered by mood range, grouped by difficulty
-  const allFavEl = document.getElementById('all-favorites');
-  let html = '';
-  for (let d = 1; d <= 5; d++) {
-    if (!allowedDiffs.includes(d)) continue;
-    const group = DAILY_TASKS.filter(t => getEffectiveDiff(t) === d);
-    if (!group.length) continue;
-    html += `<div class="diff-group">
-      <div class="diff-group-header">${diffDisplay(d)} — ${DIFF_LABELS[d].label}</div>
-      ${group.map(t => buildTaskRow(t)).join('')}
-    </div>`;
-  }
-  allFavEl.innerHTML = html;
-
-  // Custom tasks — always show all of them regardless of filter
-  const customEl = document.getElementById('custom-favorites');
-  const custom = state.dailies.customTasks || [];
-  if (custom.length) {
-    customEl.innerHTML = `<div class="diff-group">
-      <div class="diff-group-header">⭐ Your custom tasks</div>
-      ${custom.map(t => buildCustomTaskRow(t)).join('')}
-    </div>`;
-  } else {
-    customEl.innerHTML = '';
-  }
-}
-
-// ============================================================
-// CUSTOM TASK FORM
-// ============================================================
-let newCustomDiff = 1;
-
-function isEmoji(str) {
-  // Match any emoji at the start of a string
-  const emojiRegex = /^\p{Emoji}/u;
-  return emojiRegex.test(str);
-}
-
-function showAddCustomForm() {
-  newCustomDiff = 1;
-  document.getElementById('new-diff-display').textContent = diffDisplay(1);
-  const input = document.getElementById('custom-task-input');
-  input.value = '⭐ ';
-  document.getElementById('add-custom-form').style.display = 'block';
-  document.getElementById('add-custom-btn').style.display = 'none';
-  input.focus();
-  // Place cursor after emoji
-  input.setSelectionRange(2, 2);
-}
-
-function hideAddCustomForm() {
-  document.getElementById('add-custom-form').style.display = 'none';
-  document.getElementById('add-custom-btn').style.display = 'block';
-  document.getElementById('custom-task-input').value = '';
-}
-
-function changeNewDiff(delta) {
-  newCustomDiff = Math.max(1, Math.min(5, newCustomDiff + delta));
-  document.getElementById('new-diff-display').textContent = diffDisplay(newCustomDiff);
-}
-
-function saveCustomTask() {
-  let val = document.getElementById('custom-task-input').value.trim();
-  if (!val || val === '⭐') return;
-  // Ensure emoji prefix
-  if (!isEmoji(val)) val = '⭐ ' + val;
-  state.dailies.customTasks = state.dailies.customTasks || [];
-  state.dailies.customTasks.push({ label: val, diff: newCustomDiff, id: Date.now() });
-  saveState();
-  hideAddCustomForm();
-  renderDailyModal();
-}
-
-function deleteCustomTask(id) {
-  state.dailies.customTasks = (state.dailies.customTasks || []).filter(t => t.id !== id);
-  saveState();
-  renderDailyModal();
-}
-
-function buildCustomTaskRow(task) {
-  const isDone = state.dailies.done.includes(task.label);
-  const labelSafe = task.label.replace(/'/g, "\\'");
-  const badge = diffDisplay(task.diff);
-
-  const rightSide = editDiffMode
-    ? `<div class="diff-editor visible">
-         <button class="diff-stepper" onclick="changeCustomDiff(${task.id},-1)">−</button>
-         <span class="diff-badge">${badge}</span>
-         <button class="diff-stepper" onclick="changeCustomDiff(${task.id},+1)">+</button>
-       </div>
-       <button class="custom-task-row-delete" onclick="deleteCustomTask(${task.id})" title="Remove">✕</button>`
-    : `<span class="diff-badge diff-badge-tap" onclick="toggleEditDiff()" title="Tap to edit difficulty">${badge}</span>`;
-
-  return `
-    <div class="daily-task-row ${isDone ? 'done-today' : ''}" data-diff="${task.diff}">
-      <button class="daily-check" onclick="toggleDailyDone('${labelSafe}')">${isDone ? '✓' : ''}</button>
-      <span class="daily-task-label" style="flex:1;">${task.label}</span>
-      ${rightSide}
-    </div>`;
-}
-
-function changeCustomDiff(id, delta) {
-  const task = (state.dailies.customTasks || []).find(t => t.id === id);
-  if (!task) return;
-  task.diff = Math.max(1, Math.min(5, task.diff + delta));
-  saveState();
-  renderDailyModal();
-}
-
-// Auto-refill star emoji on blur if missing
-document.addEventListener('blur', (e) => {
-  if (e.target.id !== 'custom-task-input') return;
-  const val = e.target.value.trim();
-  if (val && !isEmoji(val)) {
-    e.target.value = '⭐ ' + val;
-  }
-}, true);
-
-function openDailyModal() {
-  renderDailyModal();
-  document.getElementById('daily-modal').classList.add('active');
-}
-
-function closeDailyModal() {
-  document.getElementById('daily-modal').classList.remove('active');
-}
-
-// ============================================================
-// INIT
-// ============================================================
-document.getElementById('task-text-input').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') addTaskFromInput();
-});
-
-loadState();
-renderTasks();
-updatePersonalityBanner();
-checkConsent();
-updateVoiceButton();
-
-// Check if personality is from a different day
-if (state.personality && state.personalityDate !== new Date().toISOString().slice(0, 10)) {
-  showToast('🎲 New day! Roll for a new advisor!');
-}
-
-// Register service worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
-}
-</script>
+  </div>
+
+<script src="confetti.min.js"></script>
+<script src="celebrations.js"></script>
+<script src="personalities.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

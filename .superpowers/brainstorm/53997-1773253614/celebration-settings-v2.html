@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Celebration Settings Mockup</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #1a0a2e, #2a1a4e);
+      color: #f0e6ff;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 32px;
+      margin-bottom: 8px;
+      color: #ffe66d;
+    }
+
+    .subtitle {
+      text-align: center;
+      opacity: 0.8;
+      margin-bottom: 32px;
+      font-size: 16px;
+    }
+
+    .settings-panel {
+      background: rgba(58, 42, 94, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .setting-group {
+      margin-bottom: 28px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .setting-group:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .setting-group h3 {
+      font-size: 18px;
+      color: #ffe66d;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      gap: 16px;
+    }
+
+    .setting-label {
+      flex: 1;
+    }
+
+    .setting-label-main {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .setting-label-sub {
+      font-size: 12px;
+      opacity: 0.7;
+      line-height: 1.4;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .toggle-switch input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: #7a6b9a;
+      border-radius: 28px;
+      cursor: pointer;
+      transition: 0.3s;
+      z-index: 1;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.3s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+      background: #4ecdc4;
+    }
+
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(22px);
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+
+    .radio-option:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .radio-option.selected {
+      background: rgba(78,205,196,0.15);
+      border-color: #4ecdc4;
+    }
+
+    .radio-circle {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #b8a9d4;
+      border-radius: 50%;
+      position: relative;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .radio-option.selected .radio-circle {
+      border-color: #4ecdc4;
+    }
+
+    .radio-circle::after {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #4ecdc4;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      transition: transform 0.2s;
+    }
+
+    .radio-option.selected .radio-circle::after {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .radio-label {
+      flex: 1;
+    }
+
+    .radio-label-main {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .radio-label-sub {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    .sound-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .sound-card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+      text-align: center;
+    }
+
+    .sound-card:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .sound-card.selected {
+      background: rgba(78,205,196,0.15);
+      border-color: #4ecdc4;
+    }
+
+    .sound-icon {
+      font-size: 28px;
+      margin-bottom: 6px;
+    }
+
+    .sound-name {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .preview-btn {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #f0e6ff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .preview-btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .preview-btn:active {
+      transform: scale(0.95);
+    }
+
+    .info-box {
+      background: rgba(255,230,109,0.1);
+      border: 1px solid rgba(255,230,109,0.3);
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .info-box strong {
+      color: #ffe66d;
+    }
+
+    .save-notice {
+      text-align: center;
+      margin-top: 24px;
+      padding: 16px;
+      background: rgba(78,205,196,0.15);
+      border-radius: 12px;
+      font-size: 13px;
+      color: #4ecdc4;
+    }
+
+    .volume-value {
+      min-width: 35px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎉 Celebration Settings</h1>
+    <p class="subtitle">Customize how Pedro celebrates your victories</p>
+
+    <div class="settings-panel">
+      <!-- Master Toggle -->
+      <div class="setting-group">
+        <div class="setting-row">
+          <div class="setting-label">
+            <div class="setting-label-main">🎊 Enable Celebrations</div>
+            <div class="setting-label-sub">Show confetti and Pedro animations when completing tasks</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="celebrations-enabled" checked onchange="recordToggle('celebrations-enabled', this.checked)">
+            <span class="toggle-slider"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Celebration Timing -->
+      <div class="setting-group">
+        <h3>⏰ When to Celebrate</h3>
+        <div class="radio-group">
+          <div class="radio-option selected" onclick="selectRadio(this, 'timing', 'smart')">
+            <div class="radio-circle"></div>
+            <div class="radio-label">
+              <div class="radio-label-main">Smart Mode (Recommended)</div>
+              <div class="radio-label-sub">Always: first & last task. Random: tasks in between.</div>
+            </div>
+          </div>
+
+          <div class="radio-option" onclick="selectRadio(this, 'timing', 'every')">
+            <div class="radio-circle"></div>
+            <div class="radio-label">
+              <div class="radio-label-main">Every Task</div>
+              <div class="radio-label-sub">Maximum dopamine! Celebrate everything.</div>
+            </div>
+          </div>
+
+          <div class="radio-option" onclick="selectRadio(this, 'timing', 'random')">
+            <div class="radio-circle"></div>
+            <div class="radio-label">
+              <div class="radio-label-main">Random (50% chance)</div>
+              <div class="radio-label-sub">Keeps it special and unexpected.</div>
+            </div>
+          </div>
+
+          <div class="radio-option" onclick="selectRadio(this, 'timing', 'milestones')">
+            <div class="radio-circle"></div>
+            <div class="radio-label">
+              <div class="radio-label-main">Milestones Only</div>
+              <div class="radio-label-sub">Celebrate every 5 tasks completed.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <strong>Default:</strong> Smart Mode celebrates your first win (motivation boost) and last task on your list (completion satisfaction), with random celebrations in between to keep things fun!
+        </div>
+      </div>
+
+      <!-- Confetti -->
+      <div class="setting-group">
+        <h3>🎊 Confetti Style</h3>
+        <div class="setting-row">
+          <div class="setting-label">
+            <div class="setting-label-main">Show Confetti</div>
+            <div class="setting-label-sub">Colorful particles burst on screen</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="confetti-enabled" checked onchange="recordToggle('confetti-enabled', this.checked)">
+            <span class="toggle-slider"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pedro Animation -->
+      <div class="setting-group">
+        <h3>🦝 Pedro Animation</h3>
+        <div class="setting-row">
+          <div class="setting-label">
+            <div class="setting-label-main">Show Dancing Pedro</div>
+            <div class="setting-label-sub">Pedro walks across screen celebrating with you</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="pedro-enabled" checked onchange="recordToggle('pedro-enabled', this.checked)">
+            <span class="toggle-slider"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sound Effects -->
+      <div class="setting-group">
+        <h3>🔊 Celebration Sound</h3>
+        <div class="setting-row">
+          <div class="setting-label">
+            <div class="setting-label-main">Play Sound Effects</div>
+            <div class="setting-label-sub">Audio feedback when completing tasks</div>
+          </div>
+          <div class="toggle-switch">
+            <input type="checkbox" id="sounds-enabled" checked onchange="recordToggle('sounds-enabled', this.checked)">
+            <span class="toggle-slider"></span>
+          </div>
+        </div>
+
+        <div class="sound-options">
+          <div class="sound-card selected" onclick="selectSound(this, 'chime')">
+            <div class="sound-icon">🔔</div>
+            <div class="sound-name">Chime</div>
+            <button class="preview-btn" onclick="event.stopPropagation(); playSound('chime')">▶ Preview</button>
+          </div>
+
+          <div class="sound-card" onclick="selectSound(this, 'fanfare')">
+            <div class="sound-icon">🎺</div>
+            <div class="sound-name">Fanfare</div>
+            <button class="preview-btn" onclick="event.stopPropagation(); playSound('fanfare')">▶ Preview</button>
+          </div>
+
+          <div class="sound-card" onclick="selectSound(this, 'pop')">
+            <div class="sound-icon">💥</div>
+            <div class="sound-name">Pop</div>
+            <button class="preview-btn" onclick="event.stopPropagation(); playSound('pop')">▶ Preview</button>
+          </div>
+
+          <div class="sound-card" onclick="selectSound(this, 'coins')">
+            <div class="sound-icon">🪙</div>
+            <div class="sound-name">Coins</div>
+            <button class="preview-btn" onclick="event.stopPropagation(); playSound('coins')">▶ Preview</button>
+          </div>
+
+          <div class="sound-card" onclick="selectSound(this, 'woohoo')">
+            <div class="sound-icon">🎉</div>
+            <div class="sound-name">Woohoo</div>
+            <button class="preview-btn" onclick="event.stopPropagation(); playSound('woohoo')">▶ Preview</button>
+          </div>
+
+          <div class="sound-card" onclick="selectSound(this, 'none')">
+            <div class="sound-icon">🔇</div>
+            <div class="sound-name">Silent</div>
+            <button class="preview-btn" onclick="event.stopPropagation()">Select</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Volume Control -->
+      <div class="setting-group">
+        <h3>🔊 Sound Volume</h3>
+        <div class="setting-row">
+          <div class="setting-label">
+            <div class="setting-label-main">Volume Level</div>
+            <div class="setting-label-sub">Adjust celebration sound volume</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 12px; opacity: 0.7;">🔉</span>
+            <input type="range" min="0" max="100" value="70" id="volume-slider" style="width: 120px;" oninput="updateVolume(this.value)">
+            <span class="volume-value" id="volume-value">70%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="save-notice">
+      ✓ Settings save automatically
+    </div>
+  </div>
+
+  <script>
+    // Audio Context for generating sounds
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    let currentVolume = 0.7;
+
+    function playSound(type) {
+      const now = audioContext.currentTime;
+
+      switch(type) {
+        case 'chime':
+          playChime(now);
+          break;
+        case 'fanfare':
+          playFanfare(now);
+          break;
+        case 'pop':
+          playPop(now);
+          break;
+        case 'coins':
+          playCoins(now);
+          break;
+        case 'woohoo':
+          playWoohoo(now);
+          break;
+      }
+    }
+
+    function playChime(startTime) {
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+
+      osc.frequency.value = 800;
+      osc.type = 'sine';
+
+      gain.gain.setValueAtTime(currentVolume * 0.3, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.5);
+
+      osc.start(startTime);
+      osc.stop(startTime + 0.5);
+    }
+
+    function playFanfare(startTime) {
+      const notes = [523.25, 659.25, 783.99]; // C, E, G
+      notes.forEach((freq, i) => {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        osc.frequency.value = freq;
+        osc.type = 'triangle';
+
+        const noteStart = startTime + (i * 0.15);
+        gain.gain.setValueAtTime(currentVolume * 0.2, noteStart);
+        gain.gain.exponentialRampToValueAtTime(0.01, noteStart + 0.3);
+
+        osc.start(noteStart);
+        osc.stop(noteStart + 0.3);
+      });
+    }
+
+    function playPop(startTime) {
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+
+      osc.frequency.setValueAtTime(200, startTime);
+      osc.frequency.exponentialRampToValueAtTime(100, startTime + 0.1);
+      osc.type = 'sine';
+
+      gain.gain.setValueAtTime(currentVolume * 0.5, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.1);
+
+      osc.start(startTime);
+      osc.stop(startTime + 0.1);
+    }
+
+    function playCoins(startTime) {
+      for (let i = 0; i < 3; i++) {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        osc.frequency.value = 1200 + (i * 100);
+        osc.type = 'square';
+
+        const coinStart = startTime + (i * 0.08);
+        gain.gain.setValueAtTime(currentVolume * 0.15, coinStart);
+        gain.gain.exponentialRampToValueAtTime(0.01, coinStart + 0.1);
+
+        osc.start(coinStart);
+        osc.stop(coinStart + 0.1);
+      }
+    }
+
+    function playWoohoo(startTime) {
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+
+      osc.frequency.setValueAtTime(300, startTime);
+      osc.frequency.exponentialRampToValueAtTime(800, startTime + 0.3);
+      osc.type = 'sawtooth';
+
+      gain.gain.setValueAtTime(currentVolume * 0.2, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.4);
+
+      osc.start(startTime);
+      osc.stop(startTime + 0.4);
+    }
+
+    function selectRadio(element, groupName, value) {
+      document.querySelectorAll('.radio-option').forEach(opt => {
+        opt.classList.remove('selected');
+      });
+      element.classList.add('selected');
+      recordEvent('timing', value);
+    }
+
+    function selectSound(element, sound) {
+      document.querySelectorAll('.sound-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      element.classList.add('selected');
+      recordEvent('sound', sound);
+    }
+
+    function recordToggle(name, checked) {
+      recordEvent('toggle', `${name}: ${checked}`);
+    }
+
+    function updateVolume(value) {
+      currentVolume = value / 100;
+      document.getElementById('volume-value').textContent = value + '%';
+      recordEvent('volume', value);
+    }
+
+    function recordEvent(type, value) {
+      fetch('/.events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: type,
+          choice: value,
+          timestamp: Date.now()
+        })
+      }).catch(() => {}); // Ignore fetch errors in demo
+    }
+  </script>
+</body>
+</html>

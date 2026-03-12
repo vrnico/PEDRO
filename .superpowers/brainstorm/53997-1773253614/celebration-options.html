@@ -1,0 +1,176 @@
+<h2>Task Completion Celebration</h2>
+<p class="subtitle">How should the confetti + dancing Pedro celebration work?</p>
+
+<div class="section">
+  <h3>Confetti Animation</h3>
+  <div class="options">
+    <div class="option" data-choice="canvas-confetti" onclick="toggleSelect(this)">
+      <div class="letter">A</div>
+      <div class="content">
+        <h3>Canvas Confetti Library (Recommended)</h3>
+        <p>Use a lightweight JS library like canvas-confetti for smooth, customizable particle effects. Colorful pieces shoot from bottom and fall naturally.</p>
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>Pros</h4>
+            <ul>
+              <li>Smooth 60fps animation</li>
+              <li>Small file size (~3KB)</li>
+              <li>Theme-aware (colors match theme)</li>
+              <li>Performance optimized</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Cons</h4>
+            <ul>
+              <li>Adds external dependency</li>
+              <li>Needs internet on first load</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="option" data-choice="css-confetti" onclick="toggleSelect(this)">
+      <div class="letter">B</div>
+      <div class="content">
+        <h3>Pure CSS Confetti</h3>
+        <p>Build confetti with CSS animations only — no external libraries. Simpler but less customizable.</p>
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>Pros</h4>
+            <ul>
+              <li>Zero dependencies</li>
+              <li>Works offline immediately</li>
+              <li>Very lightweight</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Cons</h4>
+            <ul>
+              <li>Less realistic motion</li>
+              <li>Harder to customize</li>
+              <li>Limited particle variety</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 40px;">
+  <h3>Dancing Pedro Animation</h3>
+  <div class="options">
+    <div class="option" data-choice="gif-overlay" onclick="toggleSelect(this)">
+      <div class="letter">C</div>
+      <div class="content">
+        <h3>Animated GIF Overlay</h3>
+        <p>Show an actual GIF of the Pedro raccoon meme walking/dancing in front of the screen for 2-3 seconds when tasks are completed.</p>
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>Pros</h4>
+            <ul>
+              <li>True to the actual meme</li>
+              <li>Maximum personality</li>
+              <li>Instantly recognizable</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Cons</h4>
+            <ul>
+              <li>Need to find/create the GIF</li>
+              <li>Larger file size</li>
+              <li>Meme-dependent aesthetic</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="option" data-choice="emoji-bounce" onclick="toggleSelect(this)">
+      <div class="letter">D</div>
+      <div class="content">
+        <h3>Bouncing Raccoon Emoji</h3>
+        <p>Make the 🦝 emoji bounce, spin, and grow larger with CSS animations — keeps the single-file simplicity.</p>
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>Pros</h4>
+            <ul>
+              <li>Zero file size increase</li>
+              <li>Works offline</li>
+              <li>Theme-consistent</li>
+              <li>Simple to implement</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Cons</h4>
+            <ul>
+              <li>Not the actual meme</li>
+              <li>Less distinctive</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="option" data-choice="css-pedro" onclick="toggleSelect(this)">
+      <div class="letter">E</div>
+      <div class="content">
+        <h3>CSS-Drawn Pedro Character</h3>
+        <p>Create a simple stylized Pedro raccoon using pure CSS shapes that walks/dances across the screen.</p>
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>Pros</h4>
+            <ul>
+              <li>Unique custom character</li>
+              <li>No images needed</li>
+              <li>Can be theme-aware</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Cons</h4>
+            <ul>
+              <li>Time-intensive to design</li>
+              <li>Won't look like actual meme</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 40px;">
+  <h3>Celebration Timing</h3>
+  <p>Should the celebration trigger:</p>
+  <div class="options">
+    <div class="option" data-choice="every-time" onclick="toggleSelect(this)">
+      <div class="letter">F</div>
+      <div class="content">
+        <h3>Every Task Completion</h3>
+        <p>Confetti + Pedro every single time you check off a task</p>
+      </div>
+    </div>
+    <div class="option" data-choice="random" onclick="toggleSelect(this)">
+      <div class="letter">G</div>
+      <div class="content">
+        <h3>Random (50% chance)</h3>
+        <p>Keep it special — celebration only happens sometimes to avoid fatigue</p>
+      </div>
+    </div>
+    <div class="option" data-choice="milestone" onclick="toggleSelect(this)">
+      <div class="letter">H</div>
+      <div class="content">
+        <h3>Milestones Only (every 5 tasks)</h3>
+        <p>Big celebration for achievements, not every task</p>
+      </div>
+    </div>
+    <div class="option" data-choice="toggle" onclick="toggleSelect(this)">
+      <div class="letter">I</div>
+      <div class="content">
+        <h3>User Setting (toggle on/off)</h3>
+        <p>Let users enable/disable celebrations in settings</p>
+      </div>
+    </div>
+  </div>
+</div>

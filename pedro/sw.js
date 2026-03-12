@@ -1,8 +1,14 @@
-const CACHE_NAME = 'pedro-v1';
+const CACHE_NAME = 'pedro-v2';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
+  './styles.css',
+  './confetti.min.js',
+  './app.js',
+  './personalities.js',
+  './celebrations.js',
+  './assets/pedro-walk.gif',
   './icons/pedro-192.png',
   './icons/pedro-512.png',
   'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap'

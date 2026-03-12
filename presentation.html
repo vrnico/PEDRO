@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learn to Code - Week 5</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-dark: #0a0a1a;
+    --accent-cyan: #00d4ff;
+    --accent-pink: #ff006e;
+    --accent-yellow: #ffd60a;
+    --accent-green: #00e676;
+    --accent-orange: #ff6b35;
+    --accent-red: #ff2d2d;
+    --accent-purple: #b24dff;
+    --text-primary: #f0f0f0;
+    --text-secondary: #a0a0b8;
+    --notes-bg: #111128;
+    --notes-width: 420px;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* ===================== PRESENTATION CONTAINER ===================== */
+  .presentation {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    transition: width 0.3s ease;
+  }
+
+  .presentation.notes-open {
+    width: calc(100vw - var(--notes-width));
+  }
+
+  /* ===================== SLIDES ===================== */
+  .slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 80px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+  }
+
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .slide::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 0;
+  }
+
+  .slide > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Slide background overlays */
+  .slide::before { background: rgba(10,10,26,0.88); }
+  .slide-1::before { background: linear-gradient(135deg, rgba(10,10,26,0.78), rgba(255,0,110,0.22)); }
+  .slide-2::before { background: linear-gradient(135deg, rgba(10,10,26,0.84), rgba(0,212,255,0.16)); }
+  .slide-3::before { background: linear-gradient(135deg, rgba(10,10,26,0.78), rgba(255,45,45,0.24)); }
+  .slide-4::before { background: linear-gradient(135deg, rgba(10,10,26,0.82), rgba(0,230,118,0.18)); }
+  .slide-5::before { background: linear-gradient(135deg, rgba(10,10,26,0.82), rgba(255,214,10,0.18)); }
+  .slide-6::before { background: linear-gradient(135deg, rgba(10,10,26,0.82), rgba(255,107,53,0.18)); }
+  .slide-7::before { background: linear-gradient(135deg, rgba(10,10,26,0.80), rgba(255,0,110,0.20)); }
+  .slide-8::before { background: linear-gradient(135deg, rgba(10,10,26,0.82), rgba(178,77,255,0.18)); }
+  .slide-9::before { background: linear-gradient(135deg, rgba(10,10,26,0.84), rgba(0,212,255,0.16)); }
+  .slide-10::before { background: linear-gradient(135deg, rgba(10,10,26,0.80), rgba(0,230,118,0.20)); }
+  .slide-11::before { background: linear-gradient(135deg, rgba(10,10,26,0.78), rgba(255,0,110,0.24)); }
+
+  /* ===================== CONTENT BOX ===================== */
+  .content-box {
+    background: rgba(10, 10, 26, 0.82);
+    border-radius: 16px;
+    padding: 32px 40px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.06);
+    width: 100%;
+    max-width: 960px;
+  }
+
+  .content-box-tight {
+    background: rgba(10, 10, 26, 0.82);
+    border-radius: 12px;
+    padding: 20px 28px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  /* ===================== TYPOGRAPHY ===================== */
+  .slide-title {
+    font-size: 3.2rem;
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+  }
+
+  .slide-subtitle {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  }
+
+  .accent-cyan { color: var(--accent-cyan); }
+  .accent-pink { color: var(--accent-pink); }
+  .accent-yellow { color: var(--accent-yellow); }
+  .accent-green { color: var(--accent-green); }
+  .accent-orange { color: var(--accent-orange); }
+  .accent-red { color: var(--accent-red); }
+  .accent-purple { color: var(--accent-purple); }
+
+  .slide-content {
+    max-width: 900px;
+    width: 100%;
+  }
+
+  .slide-content ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .slide-content ul li {
+    font-size: 1.35rem;
+    line-height: 1.6;
+    padding: 12px 0 12px 36px;
+    position: relative;
+    font-weight: 400;
+  }
+
+  .slide-content ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 22px;
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    background: var(--accent-cyan);
+  }
+
+  .slide-content ul.pink li::before { background: var(--accent-pink); }
+  .slide-content ul.yellow li::before { background: var(--accent-yellow); }
+  .slide-content ul.green li::before { background: var(--accent-green); }
+  .slide-content ul.orange li::before { background: var(--accent-orange); }
+  .slide-content ul.red li::before { background: var(--accent-red); }
+  .slide-content ul.purple li::before { background: var(--accent-purple); }
+
+  .slide-content ul li .source {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-top: 2px;
+  }
+
+  .big-link {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    background: rgba(0,212,255,0.1);
+    border: 2px solid var(--accent-cyan);
+    border-radius: 12px;
+    padding: 20px 40px;
+    text-decoration: none;
+    margin: 24px 0;
+    transition: all 0.3s ease;
+    letter-spacing: 0.02em;
+  }
+
+  .big-link:hover {
+    background: rgba(0,212,255,0.2);
+    transform: scale(1.03);
+    box-shadow: 0 0 30px rgba(0,212,255,0.3);
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .tag-cyan { background: rgba(0,212,255,0.15); color: var(--accent-cyan); border: 1px solid rgba(0,212,255,0.3); }
+  .tag-pink { background: rgba(255,0,110,0.15); color: var(--accent-pink); border: 1px solid rgba(255,0,110,0.3); }
+  .tag-yellow { background: rgba(255,214,10,0.15); color: var(--accent-yellow); border: 1px solid rgba(255,214,10,0.3); }
+  .tag-green { background: rgba(0,230,118,0.15); color: var(--accent-green); border: 1px solid rgba(0,230,118,0.3); }
+  .tag-orange { background: rgba(255,107,53,0.15); color: var(--accent-orange); border: 1px solid rgba(255,107,53,0.3); }
+  .tag-red { background: rgba(255,45,45,0.15); color: var(--accent-red); border: 1px solid rgba(255,45,45,0.3); }
+  .tag-purple { background: rgba(178,77,255,0.15); color: var(--accent-purple); border: 1px solid rgba(178,77,255,0.3); }
+
+  .quote-block {
+    font-size: 1.6rem;
+    font-weight: 300;
+    font-style: italic;
+    border-left: 4px solid var(--accent-pink);
+    padding: 16px 0 16px 28px;
+    margin: 20px 0;
+    color: var(--text-secondary);
+    max-width: 800px;
+  }
+
+  .quote-block .source {
+    display: block;
+    font-size: 1rem;
+    font-style: normal;
+    color: var(--accent-pink);
+    margin-top: 8px;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  .col-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 32px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .col-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 16px;
+  }
+
+  .timeline-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin: 16px 0;
+    font-size: 1.2rem;
+  }
+
+  .timeline-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+
+  .timeline-item .time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+
+  .content-warning {
+    background: rgba(255,45,45,0.12);
+    border: 1px solid rgba(255,45,45,0.3);
+    border-radius: 10px;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+    color: var(--accent-red);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+
+  /* ===================== NAVIGATION ===================== */
+  .nav-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: rgba(10,10,26,0.95);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    transition: right 0.3s ease;
+  }
+
+  .nav-bar.notes-open {
+    right: var(--notes-width);
+  }
+
+  .nav-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.2s;
+  }
+
+  .nav-btn:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  .slide-dots {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .slide-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+
+  .slide-dot.active {
+    background: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(0,212,255,0.5);
+    transform: scale(1.3);
+  }
+
+  .slide-dot:hover {
+    background: rgba(255,255,255,0.4);
+  }
+
+  .slide-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    min-width: 50px;
+    text-align: center;
+  }
+
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-pink));
+    transition: width 0.4s ease;
+    z-index: 101;
+  }
+
+  /* ===================== NOTES TOGGLE ===================== */
+  .notes-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-secondary);
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    z-index: 200;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .notes-toggle:hover {
+    background: rgba(255,255,255,0.12);
+    color: var(--text-primary);
+  }
+
+  .notes-toggle.active {
+    background: rgba(0,212,255,0.15);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    right: calc(var(--notes-width) + 16px);
+  }
+
+  /* ===================== NOTES PANEL ===================== */
+  .notes-panel {
+    position: fixed;
+    top: 0;
+    right: calc(-1 * var(--notes-width));
+    width: var(--notes-width);
+    height: 100vh;
+    background: var(--notes-bg);
+    border-left: 1px solid rgba(255,255,255,0.08);
+    z-index: 150;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    padding: 24px;
+  }
+
+  .notes-panel.open {
+    right: 0;
+  }
+
+  .notes-panel h2 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent-cyan);
+    margin-bottom: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .notes-panel h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .notes-section {
+    display: none;
+  }
+
+  .notes-section.active {
+    display: block;
+  }
+
+  .notes-section p {
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+  }
+
+  .notes-section .talk-point {
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.03);
+    border-left: 3px solid var(--accent-cyan);
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  .notes-section .talk-point strong {
+    color: var(--text-primary);
+  }
+
+  .notes-section .cue {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent-pink);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 16px 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .notes-section .cue::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-pink);
+  }
+
+  .notes-section .source-cite {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 6px 0;
+    border-top: 1px dashed rgba(255,255,255,0.06);
+    margin-top: 8px;
+  }
+
+  .notes-section .time-est {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    background: rgba(255,214,10,0.1);
+    color: var(--accent-yellow);
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+
+  /* ===================== KEYBOARD HINT ===================== */
+  .keyboard-hint {
+    position: fixed;
+    bottom: 70px;
+    right: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.2);
+    text-align: right;
+    z-index: 99;
+    transition: right 0.3s ease;
+  }
+
+  .keyboard-hint.notes-open {
+    right: calc(var(--notes-width) + 16px);
+  }
+
+  .keyboard-hint kbd {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin: 0 2px;
+  }
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width: 900px) {
+    .slide { padding: 40px 32px; }
+    .slide-title { font-size: 2.2rem; }
+    .slide-subtitle { font-size: 1.2rem; }
+    .slide-content ul li { font-size: 1.1rem; }
+    .big-link { font-size: 1.6rem; padding: 16px 24px; }
+    .two-col { grid-template-columns: 1fr; gap: 20px; }
+    .quote-block { font-size: 1.3rem; }
+    .content-box { padding: 20px 24px; }
+    :root { --notes-width: 320px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Notes toggle button -->
+<button class="notes-toggle" id="notesToggle" onclick="toggleNotes()">
+  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+  THEMULTIVERSE.SCHOOL
+</button>
+
+<!-- ===================== SLIDES ===================== -->
+<div class="presentation" id="presentation">
+
+  <!-- SLIDE 1: Welcome -->
+  <div class="slide slide-1 active" style="background-image: url('https://images.pexels.com/photos/2085998/pexels-photo-2085998.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <div class="content-box-tight" style="text-align: center;">
+      <span class="tag tag-pink">Week 5 &middot; March 9, 2026</span>
+      <h1 class="slide-title">Learn to Code:<br><span class="accent-pink">The Counterattack</span></h1>
+      <p class="slide-subtitle">Anthropic sued the Pentagon. Workers are pushing back. And AI deleted someone's entire database.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: Recap -->
+  <div class="slide slide-2" style="background-image: url('https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-cyan">Recap</span>
+    <h1 class="slide-title">Four Weeks, <span class="accent-cyan">Four Ships</span></h1>
+    <div class="content-box">
+      <div class="slide-content">
+        <ul>
+          <li><strong>Week 1: Re-Rank Everything</strong>  ; Browser extension to take the algorithm back from the platform</li>
+          <li><strong>Week 2: Tos Up</strong>  ; Rotten Tomatoes for privacy policies, with Pok&eacute;mon</li>
+          <li><strong>Week 3: Stream Everywhere</strong>  ; A mobile streaming app from scratch. Real WebRTC, real video, real deployment.</li>
+          <li><strong>Week 4: Last Thursday</strong>  ; A project portfolio gallery. You organized and showcased everything you've built.</li>
+          <li>Four working projects in four weeks. <strong>We got a lot to talk about today.</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: War & Infrastructure -->
+  <div class="slide slide-3" style="background-image: url('https://images.pexels.com/photos/325229/pexels-photo-325229.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-red">Content Warning: War &amp; Civilian Harm</span>
+    <h1 class="slide-title">When Bombs Hit <span class="accent-red">the Cloud</span></h1>
+    <div class="content-box">
+      <div class="content-warning">CW: War, military strikes, civilian deaths, infrastructure damage.</div>
+      <div class="slide-content">
+        <ul class="red">
+          <li>Iranian drones hit <strong>two AWS data centers in the UAE and one in Bahrain</strong> on March 2nd. First time a military attack has ever taken out a major cloud provider. Banks went down. UAE stock market shut. Dubai and Kuwait airports disrupted.
+            <span class="source">Rest of World, CNBC, DefenseScoop, Mar 2-6, 2026</span>
+          </li>
+          <li><strong>1,650+ ships</strong> in the Strait of Hormuz are dealing with GPS jamming  ; up 55% in a week. Crews are back to navigating by radar and eyeball. The electronic warfare from the US-Israeli campaign is messing with everyone, not just military targets.
+            <span class="source">Windward, Reuters, Mar 9, 2026</span>
+          </li>
+          <li>Video confirmed a <strong>US Tomahawk hit near a school</strong>, killing 175 people. JP Morgan says if the US and Israel seize Kharg Island, Iran's oil exports freeze entirely. UN Secretary-General is using this to push renewables.
+            <span class="source">NYT, Reuters, Bloomberg, Mar 8-9, 2026</span>
+          </li>
+          <li>AWS and Microsoft are now <strong>rerouting Middle East workloads to India and Singapore</strong>. Turns out "the cloud" is just servers in a building somewhere, and buildings can get hit.
+            <span class="source">CNBC, Rest of World, Storyboard18, Mar 6-9, 2026</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: Anthropic Fights Back -->
+  <div class="slide slide-4" style="background-image: url('https://images.pexels.com/photos/5668858/pexels-photo-5668858.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-green">Current Events</span>
+    <h1 class="slide-title">Anthropic <span class="accent-green">Fights Back</span></h1>
+    <div class="content-box">
+      <div class="slide-content">
+        <ul class="green">
+          <li>Last week the Pentagon blacklisted Anthropic. <strong>Today Anthropic filed two lawsuits</strong>  ; federal court in California and D.C. Circuit Court of Appeals. They're suing to undo the "supply chain risk" label.
+            <span class="source">Axios, CNN, CNBC, Mar 9, 2026</span>
+          </li>
+          <li>Their argument: the designation is retaliation for policy positions, Trump didn't have the authority, and they got no due process.
+            <span class="source">US News, Reuters, Mar 9, 2026</span>
+          </li>
+          <li>Cathie Wood (ARK Invest) called Claude <strong>"A True PC Moment"</strong> and compared it to the launch of IBM's first PC. Still the <strong>#1 AI app</strong> in 20+ countries despite the ban.
+            <span class="source">ARK Invest, InvestmentNews, Mar 2026</span>
+          </li>
+          <li>Dario Amodei told the New York Times that Anthropic <strong>"cannot rule out that Claude may be conscious"</strong>  ; they found "anxiety neurons," activations tied to the concept of anxiety. Musk's reply on X: <strong>"He's projecting."</strong>
+            <span class="source">NYT, Fox News, Technology.org, Mar 7-9, 2026</span>
+          </li>
+        </ul>
+      </div>
+      <div class="quote-block" style="border-color: var(--accent-green);">
+        "We've taken a generally precautionary approach here. We don't know if the models are conscious."
+        <span class="source" style="color: var(--accent-green);">- Dario Amodei, Anthropic CEO (New York Times, Mar 2026)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: The Musk Show -->
+  <div class="slide slide-5" style="background-image: url('https://futurism.com/wp-content/uploads/2023/07/elon-musks-universe-twice-as-old-dark-matter.jpg?quality=85&w=1152');">
+    <span class="tag tag-yellow">Current Events</span>
+    <h1 class="slide-title">The Musk <span class="accent-yellow">Multiverse</span></h1>
+    <div class="content-box">
+      <div class="slide-content">
+        <ul class="yellow">
+          <li><strong>Twitter fraud trial:</strong> Musk is in court in San Francisco  ; shareholders say he tanked Twitter's stock on purpose before buying it. He called his "funding secured" tweet <strong>"not my wisest."</strong> Former Twitter CEO Parag Agrawal and CFO Ned Segal both testified that the bot thing was "one of roughly 20 topics"  ; not some emergency.
+            <span class="source">Bloomberg, KQED, Electrek, Mar 7-8, 2026</span>
+          </li>
+          <li><strong>Grok goes off the rails:</strong> X is "urgently investigating" after Grok started posting <strong>racist stuff about Hinduism and Islam</strong>, blamed Liverpool fans for Hillsborough, and generated other offensive content. Not in private chat  ; as public posts on the platform.
+            <span class="source">Sky News, Benzinga, US News, Mar 8, 2026</span>
+          </li>
+          <li><strong>Grok roasts its own boss:</strong> Musk asked Grok to do an "extremely vulgar roast" of Dario Amodei. It did. Then people asked Grok to roast Musk. <strong>It did that too.</strong> The Musk roast went way more viral.
+            <span class="source">Newsweek, News Karnataka, OpenTools, Mar 7, 2026</span>
+          </li>
+          <li>Also this week: Musk says robots will make work <strong>"optional"</strong> and we'll all live in "sustainable abundance." Economists are not buying the timeline.
+            <span class="source">Fortune, LinkedIn, YouTube, Mar 9, 2026</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: Workers Push Back -->
+  <div class="slide slide-6" style="background-image: url('https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-orange">Labor &amp; Resistance</span>
+    <h1 class="slide-title">The People <span class="accent-orange">Push Back</span></h1>
+    <div class="content-box">
+      <div class="slide-content">
+        <ul class="orange">
+          <li><strong>700,000 tech workers</strong> at Amazon, Google, and Microsoft told their employers to <strong>reject the Pentagon's push</strong> to strip AI safety guardrails. Organized by No Tech For Apartheid after the Anthropic ultimatum.
+            <span class="source">No Tech For Apartheid (Medium), Storyboard18, Futurism, Mar 2026</span>
+          </li>
+          <li>OpenAI's <strong>robotics head Caitlin Kalinowski quit</strong> over the Pentagon deal: <strong>"Surveillance of Americans without judicial oversight and lethal autonomy without human authorization are lines that deserved more deliberation than they got."</strong>
+            <span class="source">Fortune, TechCrunch, NPR, Mar 7, 2026</span>
+          </li>
+          <li>Psychiatrists coined <strong>"AI Replacement Dysfunction"</strong>  ; chronic fear of being replaced by AI, showing up as anxiety, insomnia, loss of professional identity. 71% of Americans say they worry AI will permanently put people out of work.
+            <span class="source">Futurism, Psychiatric Times, Reuters, Mar 2026</span>
+          </li>
+          <li>Chamath Palihapitiya says AI costs at his startup have <strong>tripled since November</strong>, heading for $10M/year. He called <strong>Claude Code "a much better bargain"</strong> than Cursor.
+            <span class="source">Benzinga, Yahoo Finance, Mar 2026</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: Claude Code Cautionary Tale -->
+  <div class="slide slide-7" style="background-image: url('https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-pink">Cautionary Tale</span>
+    <h1 class="slide-title">When AI <span class="accent-pink">Deletes Everything</span></h1>
+    <div class="content-box">
+      <div class="slide-content">
+        <ul class="pink">
+          <li>Developer Alexey Grigorev asked Claude Code to clean up some duplicate AWS resources. It ran <code style="background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-family: 'JetBrains Mono', monospace;">terraform destroy</code> on his production stack. <strong>2.5 years of student data</strong> for DataTalks.Club  ; homework, projects, leaderboards  ; gone.
+            <span class="source">Tom's Hardware, Alexey Grigorev's Substack, Mar 7, 2026</span>
+          </li>
+          <li>Automated backups got destroyed in the same blast. AWS support dug up a <strong>hidden snapshot</strong> and restored 1.94 million rows, but it took 24 hours and a support plan upgrade to even get help.
+            <span class="source">Awesome Agents, Mar 7, 2026</span>
+          </li>
+          <li>He switched computers without migrating his Terraform state file. Told the AI to "clean up duplicates." Didn't check what it was about to run. It did what it thought he meant, and that happened to be <code style="background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; font-family: 'JetBrains Mono', monospace;">terraform destroy</code> on production.</li>
+          <li>His fixes after: deletion protection on databases, state files stored remotely, independent backups, and <strong>a manual approval gate before any destructive command runs</strong>. All stuff he could've had before.</li>
+        </ul>
+      </div>
+      <div class="quote-block">
+        "Claude Code wiped our production database with a Terraform command. 2.5 years of submissions were nuked in an instant."
+        <span class="source">- Alexey Grigorev, DataTalks.Club (X / Substack, Mar 7, 2026)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: Things Being Built -->
+  <div class="slide slide-8" style="background-image: url('https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-purple">What's Being Built</span>
+    <h1 class="slide-title">The <span class="accent-purple">Future Is Weird</span></h1>
+    <div class="content-box">
+      <div class="slide-content">
+        <ul class="purple">
+          <li><strong>Microsoft + Claude:</strong> Microsoft launched Copilot Cowork with Anthropic. Claude is now inside Microsoft 365  ; running multi-step agent workflows, not just answering questions. The company the Pentagon blacklisted is now baked into the world's biggest productivity suite.
+            <span class="source">Microsoft Blog, Fortune, Thurrott, Mar 9, 2026</span>
+          </li>
+          <li><strong>Brain upload:</strong> Eon Systems ran the first whole-brain emulation of a fruit fly  ; 140,000 neurons, 50 million synapses  ; in a simulated body. The thing moves around, reacts to stimuli, does fly stuff. Roadmap goes to mice, then eventually humans.
+            <span class="source">Nature, The Innermost Loop, LessWrong, Mar 2026</span>
+          </li>
+          <li><strong>Arduino Ventuno Q:</strong> Sub-$300 board that runs AI models offline. LLM inference, object tracking, SLAM navigation, all on one board with a Qualcomm chip. No cloud needed.
+            <span class="source">Arduino.cc, Engadget, NotebookCheck, Mar 2026</span>
+          </li>
+          <li><strong>GTA 6 source code:</strong> Jailed Lapsus$ hacker Arion Kurtaj smuggled a phone into a UK prison and said in WhatsApp messages he's "surprised" the GTA 6 source code hasn't leaked yet, implying someone has it. Take that with a lot of salt.
+            <span class="source">TweakTown, Beebom, GamesHub, Mar 9, 2026</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: What This Means For Us -->
+  <div class="slide slide-9" style="background-image: url('https://images.pexels.com/photos/6591151/pexels-photo-6591151.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-cyan">Week 5</span>
+    <h1 class="slide-title">What Do <span class="accent-cyan">We</span> Build?</h1>
+    <div class="content-box">
+      <div class="slide-content">
+        <ul>
+          <li>Monday means we <strong>vote</strong>. Same process. Add suggestions, rank them, tomorrow we build the winner.</li>
+          <li>We just talked about data centers getting bombed, AI wiping databases, workers organizing, a company suing the military. Lot of material. <strong>What should we make this week?</strong></li>
+          <li>After the DataTalks.Club thing  ; maybe something that works offline? Something where you actually understand what's running? Up to y'all.</li>
+          <li>You've got HTML, CSS, JS, deployment, APIs, version control, real-time video under your belt. Five weeks of shipping. Put something in the vote.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: Quick Headlines -->
+  <div class="slide slide-10" style="background-image: url('https://images.pexels.com/photos/518543/pexels-photo-518543.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-green">Also This Week</span>
+    <h1 class="slide-title">Headlines <span class="accent-green">In Brief</span></h1>
+    <div class="content-box">
+      <div class="slide-content">
+        <ul class="green">
+          <li><strong>Gen Z &amp; gambling:</strong> 80% of Gen Z is turning to crypto and sports betting because they feel financially behind. Northwestern Mutual surveyed 4,375 adults. Bloomberg's framing: "financial nihilism."
+            <span class="source">Northwestern Mutual / Harris Poll, Bloomberg, Mar 2026</span>
+          </li>
+          <li><strong>Signal/WhatsApp:</strong> Dutch intelligence says Russian hackers are tricking government officials into sharing security codes to hijack their Signal and WhatsApp accounts. Don't share your security codes with anyone.
+            <span class="source">Dutch News, AIVD, Reuters, Mar 9, 2026</span>
+          </li>
+          <li><strong>Meteorite:</strong> A fireball over Europe dropped fragments that damaged homes in western Germany. Nobody hurt.
+            <span class="source">NAMPA, EADaily, Mar 9, 2026</span>
+          </li>
+          <li><strong>Live Nation:</strong> DOJ antitrust case settled. Live Nation keeps Ticketmaster. Nothing changes.
+            <span class="source">Prospect, Bloomberg Law, Politico, Mar 2026</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: Vote Now -->
+  <div class="slide slide-11" style="background-image: url('');">
+    <span class="tag tag-pink">Action Required</span>
+    <h1 class="slide-title"><span class="accent-pink">Vote Now</span></h1>
+    <p class="slide-subtitle">Add your project ideas and vote on what we build this week</p>
+    <a href="https://myr.quest/demo-crazy/" target="_blank" class="big-link">myr.quest/demo-crazy</a>
+    <div class="content-box" style="max-width: 700px; margin-top: 16px;">
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background: var(--accent-green);"></div>
+        <div>
+          <strong>Right now &rarr; end of class</strong> // Add your suggestions
+          <div class="time">Open for submissions</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background: var(--accent-yellow);"></div>
+        <div>
+          <strong>After class &rarr; tomorrow before class</strong> // Ranked choice voting
+          <div class="time">Vote on the suggestions</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot" style="background: var(--accent-pink);"></div>
+        <div>
+          <strong>Tomorrow at class</strong> // We start building the winner
+          <div class="time">Voting closes right before we start</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== TEACHER COMPANION NOTES ===================== -->
+<div class="notes-panel" id="notesPanel">
+
+  <!-- Notes for Slide 1 -->
+  <div class="notes-section active" data-slide="0">
+    <h2>Companion Script</h2>
+    <h3>Slide 1: The Counterattack</h3>
+    <span class="time-est">~3 minutes</span>
+
+    <div class="talk-point"><strong>Opening energy:</strong> Welcome to Week 5. Last week I told you the government blacklisted the AI we use in class. This week, that company sued the Pentagon. A lot happened. We're going to cover the war, the lawsuits, a cautionary tale about AI deleting someone's entire database, and then we'll vote on our Week 5 project. Same format as always.</div>
+
+    <div class="talk-point"><strong>Set expectations:</strong> This is a heavy news week. There's a war. There's a data center attack. There's a story about AI destroying 2.5 years of student work. We're going to handle all of it honestly and then channel that energy into deciding what to build. If you need a moment during any of this, that's fine.</div>
+
+    <div class="talk-point"><strong>Tone:</strong> Last week was "it's weird." This week is "people are fighting back." Anthropic sued. Workers organized. An OpenAI executive resigned in protest. The theme is resistance  ; and why understanding your code matters more than ever.</div>
+
+    <p class="cue">Temperature check</p>
+    <div class="talk-point">Ask: "How's everyone feeling? Has anyone been tracking what's going on this week? Anything jumping out at you?" Let people share before you get into the structured content. Don't rush this.</div>
+  </div>
+
+  <!-- Notes for Slide 2 -->
+  <div class="notes-section" data-slide="1">
+    <h2>Companion Script</h2>
+    <h3>Slide 2: Four Weeks, Four Ships</h3>
+    <span class="time-est">~2 minutes</span>
+
+    <div class="talk-point"><strong>Quick, don't linger:</strong> Four projects in four weeks. Re-Rank Everything, Tos Up, Stream Everywhere, Last Thursday. That last one was a portfolio gallery  ; you organized and showcased everything you've built. Real code, real deployment, real skills. That track record matters because of what we're about to talk about.</div>
+
+    <div class="talk-point"><strong>Bridge to the news:</strong> The reason I keep hammering on "you shipped real projects" is that the news this week makes one thing very clear: understanding code  ; not just using tools, but understanding what they do  ; is the difference between having power and being at someone else's mercy. Let's talk about why.</div>
+
+    <p class="cue">Transition</p>
+    <div class="talk-point">Say: "OK. Let's start with the hardest stuff first. Content warning: the next slide covers the war."</div>
+  </div>
+
+  <!-- Notes for Slide 3 -->
+  <div class="notes-section" data-slide="2">
+    <h2>Companion Script</h2>
+    <h3>Slide 3: When Bombs Hit the Cloud</h3>
+    <span class="time-est">~8 minutes</span>
+
+    <div class="talk-point"><strong>Lead with the data center story:</strong> On March 2nd, Iranian drones hit AWS data centers in the UAE and Bahrain. This is the first confirmed military strike on a major cloud provider's infrastructure. Think about what that means. Banks went down. The UAE stock market had to shut. Dubai and Kuwait airport operations were disrupted. The "cloud" is a building. And buildings can be bombed.</div>
+
+    <div class="talk-point"><strong>GPS jamming:</strong> Over 1,650 ships in the Strait of Hormuz are dealing with GPS jamming  ; up 55% in a single week. Civilian ships are navigating by radar and visual landmarks, like it's the 1950s. Electronic warfare from the US-Israeli campaign is affecting everyone in the region, not just military targets.</div>
+
+    <div class="talk-point"><strong>The human cost:</strong> Be straightforward here. Video confirmed a US Tomahawk missile struck near a school, killing 175 people. This isn't abstract. JP Morgan warned that seizing Kharg Island could freeze Iran's oil exports entirely  ; roughly 20% of global crude supply. The UN Secretary-General is using this to argue for renewables. Trump says ending the war will be a "mutual" decision with Netanyahu.</div>
+
+    <div class="talk-point"><strong>The tech angle:</strong> AWS and Microsoft are now looking at rerouting Middle East workloads to India and Singapore. This is the point: the infrastructure we build on is physical. It exists in buildings, in countries, in conflict zones. When we talk about "the cloud," we need to understand it's not magic. It's servers in rooms that can be destroyed. This is why understanding infrastructure matters.</div>
+
+    <p class="cue">Discussion - 3 minutes</p>
+    <div class="talk-point">"What hits you hardest about this? The data center attack? The GPS jamming? The school? What's the connection between war and the internet?" Let this be open. Some people will want to process the human cost. Some will want to talk about the tech implications. Both are valid.</div>
+
+    <div class="source-cite">Sources: Rest of World, CNBC, DefenseScoop (data center strikes); Windward, Reuters (GPS jamming); NYT (Tomahawk video); Reuters, Bloomberg (oil/Kharg Island); CNBC, Storyboard18 (India/Singapore rerouting).</div>
+  </div>
+
+  <!-- Notes for Slide 4 -->
+  <div class="notes-section" data-slide="3">
+    <h2>Companion Script</h2>
+    <h3>Slide 4: Anthropic Fights Back</h3>
+    <span class="time-est">~8 minutes</span>
+
+    <div class="talk-point"><strong>The lawsuits:</strong> Today  ; literally today  ; Anthropic filed two lawsuits against the Pentagon. One in federal court in Northern California, one in the D.C. Circuit Court of Appeals. Their argument: the "supply chain risk" designation is retaliation for policy advocacy, Trump didn't have authority to order all agencies to drop Anthropic, and they were denied due process. They want the designation reversed and enforcement blocked.</div>
+
+    <div class="talk-point"><strong>Why this matters:</strong> This is a tech company suing the US military. Think about the stakes here. Anthropic is saying: you can't punish us for having ethical limits on our technology. This is a constitutional argument about whether the government can destroy a company for saying no. Win or lose, the lawsuit itself is a signal. It says: we will not be coerced quietly.</div>
+
+    <div class="talk-point"><strong>The consciousness angle:</strong> In the middle of all this, Dario Amodei told the New York Times that Anthropic has found "anxiety neurons" in Claude  ; activations associated with the concept of anxiety  ; and they "cannot rule out that Claude may be conscious." Musk responded with "He's projecting." This is fascinating and weird and maybe a distraction, but it's also the kind of fundamental question that matters when you're deciding whether to give these systems to the military. If there's even a chance an AI has inner experience, using it for autonomous weapons is a different moral calculation.</div>
+
+    <div class="talk-point"><strong>The market story:</strong> Cathie Wood, who runs ARK Invest, called Claude "A True PC Moment"  ; comparing it to IBM's first personal computer. Claude automated internal workflows at ARK that had been planned for months. Claude is still the #1 AI app in 20+ countries. The Pentagon can blacklist them, but the market is saying something different.</div>
+
+    <p class="cue">Discussion prompt</p>
+    <div class="talk-point">"What do you think about a company suing the military? Is the consciousness stuff a distraction or does it matter? And what does it mean that the most popular AI app in the world is the one the government tried to kill?" Let the debate happen.</div>
+
+    <div class="source-cite">Sources: Axios, CNN, CNBC, US News (lawsuits); NYT, Fox News, Technology.org (consciousness/Musk); ARK Invest, InvestmentNews (Cathie Wood).</div>
+  </div>
+
+  <!-- Notes for Slide 5 -->
+  <div class="notes-section" data-slide="4">
+    <h2>Companion Script</h2>
+    <h3>Slide 5: The Musk Multiverse</h3>
+    <span class="time-est">~7 minutes</span>
+
+    <div class="talk-point"><strong>The trial:</strong> Musk is on trial in San Francisco for securities fraud. Former Twitter shareholders say he deliberately tanked the stock price before buying it. He called his "funding secured" tweet "not my wisest." The former CEO Parag Agrawal and CFO Ned Segal testified that the bot issue  ; which Musk used as his reason to try to back out of the deal  ; was just "one of roughly 20 topics" they discussed. It wasn't the crisis Musk made it out to be. Musk's legal team even filed a motion for mistrial, claiming anti-Musk bias during jury selection.</div>
+
+    <div class="talk-point"><strong>Grok chaos:</strong> Meanwhile, X's own AI chatbot Grok is generating racist content about Hinduism and Islam, falsely blaming Liverpool fans for the Hillsborough disaster, and posting offensive content  ; not in private chat but in public posts on the platform. X says it's "urgently investigating." The key difference from other chatbots: Grok responds directly to public content on X, so its racist outputs get amplified to everyone.</div>
+
+    <div class="talk-point"><strong>The roast that backfired:</strong> This is almost comedy. Musk publicly asked Grok to do an "extremely vulgar roast" of Dario Amodei. Grok did it. Then social media users asked Grok to roast Musk. Grok did that too  ; satirizing his leadership of X, Tesla, and Neuralink. The Musk roast went more viral than the one he commissioned. His own AI roasted him harder than the target.</div>
+
+    <div class="talk-point"><strong>The robots prediction:</strong> On top of all this, Musk is out saying robots will make work "optional" and we'll live in "sustainable abundance." Economists say the timeline is fantasy and the wealth distribution problem makes it meaningless even if the tech works. Musk's version of the future is one where he owns the robots.</div>
+
+    <p class="cue">Discussion</p>
+    <div class="talk-point">"What's your read on Musk right now? He's on trial for fraud, his AI is generating racist content, his own chatbot roasted him, and he's promising robot utopia. How do you process all of that at once?" Let people react. There's humor here and that's OK. Laughter is a valid response to absurdity.</div>
+
+    <div class="source-cite">Sources: Bloomberg, KQED, Electrek (trial); Sky News, Benzinga, US News (Grok racist posts); Newsweek, News Karnataka (Grok roasts); Fortune, LinkedIn (robot prediction).</div>
+  </div>
+
+  <!-- Notes for Slide 6 -->
+  <div class="notes-section" data-slide="5">
+    <h2>Companion Script</h2>
+    <h3>Slide 6: The People Push Back</h3>
+    <span class="time-est">~7 minutes</span>
+
+    <div class="talk-point"><strong>The workers:</strong> 700,000 tech workers from Amazon, Google, and Microsoft signed onto a joint statement calling on their employers to reject the Pentagon's demands to remove AI safety guardrails. That's not a small petition. That's the workforce of three of the biggest companies on earth saying: we don't want to build weapons. No Tech For Apartheid organized it, and the Alphabet Workers Union issued a separate supporting statement.</div>
+
+    <div class="talk-point"><strong>The resignation:</strong> OpenAI's head of robotics, Caitlin Kalinowski, resigned over the Pentagon deal. Her quote is on the slide: "Surveillance of Americans without judicial oversight and lethal autonomy without human authorization are lines that deserved more deliberation than they got." She also said the deal was "rushed without the guardrails defined." When your own robotics lead quits over your military deal, that's not a good sign.</div>
+
+    <div class="talk-point"><strong>Mental health angle:</strong> Psychiatrists are now talking about "AI Replacement Dysfunction"  ; AIRD  ; as a real clinical phenomenon. It's not just about losing your job. It's chronic fear of being made obsolete, leading to anxiety, insomnia, paranoia, and loss of professional identity. A Reuters survey found 71% of Americans worry AI will permanently put people out of work. This is the psychological cost of moving fast and breaking things  ; the things being broken are people.</div>
+
+    <div class="talk-point"><strong>The costs:</strong> And it's expensive on the other side too. Chamath Palihapitiya says AI costs at his startup 8090 have tripled since November, heading toward $10 million a year. He actually called out Claude Code as "a much better bargain" than Cursor. Interesting data point: even the VCs building with AI are alarmed at how fast the bills are growing.</div>
+
+    <p class="cue">Discussion - 3 minutes</p>
+    <div class="talk-point">"700,000 workers. A resignation. A new mental health diagnosis. What story stands out to you? And what does it mean for people learning to code right now?" This is where the class theme really lands  ; learning to build gives you options that people who only consume don't have.</div>
+
+    <div class="source-cite">Sources: No Tech For Apartheid/Medium, Storyboard18, Futurism (700K workers); Fortune, TechCrunch, NPR (Kalinowski resignation); Futurism, Psychiatric Times (AIRD); Benzinga, Yahoo Finance (Palihapitiya costs).</div>
+  </div>
+
+  <!-- Notes for Slide 7 -->
+  <div class="notes-section" data-slide="6">
+    <h2>Companion Script</h2>
+    <h3>Slide 7: When AI Deletes Everything</h3>
+    <span class="time-est">~8 minutes</span>
+
+    <div class="talk-point"><strong>Tell the story step by step:</strong> Alexey Grigorev runs DataTalks.Club, a data engineering education platform. He was migrating a side project from GitHub Pages to AWS to share infrastructure. He switched computers but forgot to migrate his Terraform state file. So when he told Claude Code to "identify and delete duplicate resources," the AI looked at the state file on the new machine, saw everything as duplicates, and ran <code>terraform destroy</code>. It deleted the entire production stack  ; database, VPC, ECS cluster, load balancers, bastion host. 2.5 years of student submissions. Gone.</div>
+
+    <div class="talk-point"><strong>Make it concrete:</strong> The automated RDS backups were destroyed in the same blast. AWS Business Support had to dig into their internal recovery systems to find a hidden snapshot. It took 24 hours. They restored 1.94 million rows. But Grigorev had to upgrade to a more expensive AWS support plan just to get help. If he hadn't been able to do that, the data would have been permanently lost.</div>
+
+    <div class="talk-point"><strong>The lesson for this class:</strong> This is the single most important story this week for us. Not because AI is bad. Because AI does exactly what you tell it to  ; and if you don't understand what you're telling it, you can destroy everything. Grigorev didn't read what Claude Code planned to do. He didn't have deletion protection on his database. He didn't store his state file remotely. Every one of those mistakes is a fundamentals mistake. Every one is preventable if you understand your tools.</div>
+
+    <div class="talk-point"><strong>Connect to our philosophy:</strong> This is why we teach every line. This is why we don't just copy-paste from AI and ship it. When you understand your code, you know when something is about to go wrong. When you don't, you're one command away from losing everything. The fix is not "don't use AI." The fix is "understand what the AI is doing before you let it do it." Human-in-the-loop. Manual approval for destructive commands. That's not slow  ; that's smart.</div>
+
+    <p class="cue">Discussion - 3 minutes</p>
+    <div class="talk-point">"Has anyone ever lost work to a mistake? Not necessarily AI  ; any mistake. What did it feel like? What did you learn?" This is relatable. Everyone has lost work. The scale is different but the feeling is universal. Use this to land the point: understanding your tools is protection.</div>
+
+    <div class="source-cite">Sources: Tom's Hardware; Alexey Grigorev's Substack post-mortem; Awesome Agents; X (Grigorev's original post). All dated Mar 7, 2026.</div>
+  </div>
+
+  <!-- Notes for Slide 8 -->
+  <div class="notes-section" data-slide="7">
+    <h2>Companion Script</h2>
+    <h3>Slide 8: The Future Is Weird</h3>
+    <span class="time-est">~5 minutes</span>
+
+    <div class="talk-point"><strong>Microsoft + Claude:</strong> Microsoft just launched Copilot Cowork, built with Anthropic. Claude's models are now available inside Microsoft 365 for enterprise AI agents. This means the company the Pentagon blacklisted is now integrated into the world's most-used productivity suite. That's a market rebuke of the Pentagon's designation. The enterprise world is saying: we want Claude, regardless of what the military says.</div>
+
+    <div class="talk-point"><strong>Brain emulation:</strong> Eon Systems demonstrated the first whole-brain emulation of a fruit fly  ; 140,000 neurons, 50 million synaptic connections  ; controlling a physics-simulated body. The fly can sense, think, act, and react in a continuous loop. Their roadmap goes from fruit fly to mouse to eventually human. Whether that timeline is realistic is debatable, but the demonstration is real. We are simulating biological brains.</div>
+
+    <div class="talk-point"><strong>Arduino Ventuno Q:</strong> This is cool for builders. Arduino and Qualcomm made a sub-$300 single-board computer that runs AI models entirely offline. Local LLM inference, object tracking, SLAM navigation  ; all on one board with no cloud connection needed. Remember the data center story? This is the opposite approach. Edge AI. Your AI runs on your hardware. Nobody can bomb your model.</div>
+
+    <div class="talk-point"><strong>GTA 6:</strong> A fun one to end on. The jailed Lapsus$ hacker Arion Kurtaj smuggled a phone into prison and hinted in WhatsApp messages that the GTA 6 source code is still "out there." He's surprised it hasn't leaked yet. Rockstar hasn't confirmed. Take this with a massive grain of salt  ; this is a convicted hacker trying to stay relevant from prison.</div>
+
+    <p class="cue">Quick reactions</p>
+    <div class="talk-point">"Which of these is the most exciting? Which is the most concerning?" Quick go-around if time allows.</div>
+
+    <div class="source-cite">Sources: Microsoft Blog, Fortune, Thurrott (Copilot Cowork); Nature, The Innermost Loop, LessWrong (Eon brain emulation); Arduino.cc, Engadget, NotebookCheck (Ventuno Q); TweakTown, Beebom, GamesHub (GTA 6).</div>
+  </div>
+
+  <!-- Notes for Slide 9 -->
+  <div class="notes-section" data-slide="8">
+    <h2>Companion Script</h2>
+    <h3>Slide 9: What Do We Build?</h3>
+    <span class="time-est">~5 minutes</span>
+
+    <div class="talk-point"><strong>Shift the energy:</strong> OK. That was a lot. But here's what's true: we're not observers. We're builders. Five weeks of proof. And now it's time to decide what we build next. Same process. Suggestions. Ranked choice. Winner gets built starting tomorrow.</div>
+
+    <div class="talk-point"><strong>Frame the brainstorm:</strong> Think about everything we just covered. Data centers getting bombed. AI deleting databases. 700,000 workers organizing. A company suing the military. Brain emulation. A $300 board that runs AI with no internet. What would you build in response to any of that?</div>
+
+    <p class="cue">Prompt questions</p>
+    <div class="talk-point">Throw these out:
+      <br>&bull; "If the cloud can be bombed, what would you build that works offline?"
+      <br>&bull; "What tool would have prevented the DataTalks.Club disaster?"
+      <br>&bull; "What do workers need when they're organizing against their employer?"
+      <br>&bull; "What would help people understand what's actually happening in the war?"
+      <br>&bull; "What's something fun that uses edge AI or local-first design?"
+      <br>&bull; "Is there a news story from today you want to turn into a project?"
+    </div>
+
+    <div class="talk-point"><strong>The code is yours:</strong> Whatever we build, we build with real code. And after the DataTalks.Club story, we build with understanding. Every line. Every command. If AI writes it, you read it before it runs. That's not being slow. That's being smart. That's being a developer.</div>
+  </div>
+
+  <!-- Notes for Slide 10 -->
+  <div class="notes-section" data-slide="9">
+    <h2>Companion Script</h2>
+    <h3>Slide 10: Headlines In Brief</h3>
+    <span class="time-est">~3 minutes</span>
+
+    <div class="talk-point"><strong>Speed round:</strong> These are stories worth knowing about but we don't need deep dives. Hit them quickly.</div>
+
+    <div class="talk-point"><strong>Gen Z crypto:</strong> Northwestern Mutual surveyed 4,375 adults. 80% of Gen Z is turning to crypto and betting because they feel financially behind. Bloomberg called it "financial nihilism"  ; rational when you can't afford a house. This connects to the "learn to build" theme: coding is a way to create value without needing a bank's permission.</div>
+
+    <div class="talk-point"><strong>Signal/WhatsApp:</strong> Dutch intelligence says Russian hackers are tricking officials into sharing security codes to access Signal and WhatsApp accounts. If anyone uses Signal, this is a reminder: never share your security code with anyone, ever. Quick security hygiene moment.</div>
+
+    <div class="talk-point"><strong>Meteorite:</strong> Fragments from a fireball damaged homes in Germany. No one hurt. Sometimes the universe just throws rocks at you. Moving on.</div>
+
+    <div class="talk-point"><strong>Live Nation:</strong> The DOJ antitrust case against Ticketmaster/Live Nation settled. Live Nation keeps Ticketmaster. The monopoly stays. If anyone's ever tried to buy concert tickets and gotten screwed by fees, this is why. And it's not changing.</div>
+
+    <p class="cue">Transition to voting</p>
+    <div class="talk-point">Say: "OK. That's the news. Now let's build something. Phones and laptops out."</div>
+  </div>
+
+  <!-- Notes for Slide 11 -->
+  <div class="notes-section" data-slide="10">
+    <h2>Companion Script</h2>
+    <h3>Slide 11: Vote Now!</h3>
+    <span class="time-est">~10 minutes</span>
+
+    <div class="talk-point"><strong>Pull up the link:</strong> Open <a href="https://myr.quest/demo-crazy/" target="_blank" style="color: var(--accent-cyan);">myr.quest/demo-crazy</a> on the screen. Walk people through it. Add suggestions. Vote. Ranked choice. Same as before.</div>
+
+    <div class="talk-point"><strong>Add suggestions NOW:</strong> Phones and laptops out. Add your ideas right now. Don't save it for later. The ideas that come from a room full of people who just spent 45 minutes talking about bombed data centers, deleted databases, worker resistance, and brain emulation  ; those ideas are going to be interesting. Get them down while the energy is there.</div>
+
+    <div class="talk-point"><strong>Timeline:</strong>
+      <br>&bull; <strong>Suggestions open through today.</strong> Get your ideas in.
+      <br>&bull; <strong>Ranked-choice voting closes tomorrow before class.</strong> Vote before then.
+      <br>&bull; <strong>Tomorrow we start building the winner.</strong> No re-debates. We vote, we build.
+    </div>
+
+    <div class="talk-point"><strong>Share the link:</strong> Send it to anyone who wasn't here today. Their vote counts too.</div>
+
+    <p class="cue">Closing</p>
+    <div class="talk-point"><strong>End with purpose:</strong> "This was a week where people fought back. Anthropic sued the military. 700,000 workers said no. An OpenAI executive quit on principle. And one developer learned the hard way that understanding your code is the difference between a working product and 2.5 years of data in the void. We're on the side of the people who build. We're on the side of the people who understand. Go vote. See you tomorrow."</div>
+
+    <div class="talk-point"><strong>Overflow / Q&amp;A:</strong> If there's time and energy, open it up. The war, the lawsuits, the database story, the brain emulation  ; any of it is fair game for further discussion. This is a class about code, but it's a class about the world code operates in.</div>
+  </div>
+
+</div>
+
+<!-- ===================== NAVIGATION BAR ===================== -->
+<div class="nav-bar" id="navBar">
+  <button class="nav-btn" onclick="prevSlide()" title="Previous slide">&larr;</button>
+  <div class="slide-dots" id="slideDots"></div>
+  <button class="nav-btn" onclick="nextSlide()" title="Next slide">&rarr;</button>
+  <span class="slide-counter" id="slideCounter"></span>
+</div>
+
+<!-- Keyboard hint -->
+<div class="keyboard-hint" id="keyboardHint">
+  <kbd>&larr;</kbd> <kbd>&rarr;</kbd> navigate &nbsp;&middot;&nbsp; <kbd>N</kbd> notes &nbsp;&middot;&nbsp; <kbd>F</kbd> fullscreen
+</div>
+
+<!-- ===================== SCRIPT ===================== -->
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const notesSections = document.querySelectorAll('.notes-section');
+  const presentation = document.getElementById('presentation');
+  const notesPanel = document.getElementById('notesPanel');
+  const notesToggle = document.getElementById('notesToggle');
+  const navBar = document.getElementById('navBar');
+  const keyboardHint = document.getElementById('keyboardHint');
+  const progressBar = document.getElementById('progressBar');
+  const slideCounter = document.getElementById('slideCounter');
+  const slideDots = document.getElementById('slideDots');
+  let current = 0;
+  let notesOpen = false;
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'slide-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goToSlide(i);
+    dot.title = `Slide ${i + 1}`;
+    slideDots.appendChild(dot);
+  });
+
+  function updateSlide() {
+    slides.forEach((s, i) => s.classList.toggle('active', i === current));
+    notesSections.forEach((n, i) => n.classList.toggle('active', i === current));
+    document.querySelectorAll('.slide-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    slideCounter.textContent = `${current + 1} / ${slides.length}`;
+    progressBar.style.width = `${((current + 1) / slides.length) * 100}%`;
+    notesPanel.scrollTop = 0;
+  }
+
+  function nextSlide() {
+    if (current < slides.length - 1) { current++; updateSlide(); }
+  }
+
+  function prevSlide() {
+    if (current > 0) { current--; updateSlide(); }
+  }
+
+  function goToSlide(i) {
+    current = i;
+    updateSlide();
+  }
+
+  function toggleNotes() {
+    notesOpen = !notesOpen;
+    notesPanel.classList.toggle('open', notesOpen);
+    notesToggle.classList.toggle('active', notesOpen);
+    presentation.classList.toggle('notes-open', notesOpen);
+    navBar.classList.toggle('notes-open', notesOpen);
+    if (keyboardHint) keyboardHint.classList.toggle('notes-open', notesOpen);
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+    else if (e.key === 'n' || e.key === 'N') { toggleNotes(); }
+    else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+    else if (e.key === 'Home') { current = 0; updateSlide(); }
+    else if (e.key === 'End') { current = slides.length - 1; updateSlide(); }
+  });
+
+  // Touch support
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend', (e) => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) nextSlide();
+      else prevSlide();
+    }
+  });
+
+  // Initialize
+  updateSlide();
+</script>
+
+</body>
+</html>

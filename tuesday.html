@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learn to Code - Week 5, Day 2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-dark: #0a0a1a;
+    --accent-cyan: #00d4ff;
+    --accent-pink: #ff006e;
+    --accent-yellow: #ffd60a;
+    --accent-green: #00e676;
+    --accent-orange: #ff6b35;
+    --accent-red: #ff2d2d;
+    --accent-purple: #b24dff;
+    --text-primary: #f0f0f0;
+    --text-secondary: #a0a0b8;
+    --notes-bg: #111128;
+    --notes-width: 420px;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .presentation {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    transition: width 0.3s ease;
+  }
+
+  .presentation.notes-open {
+    width: calc(100vw - var(--notes-width));
+  }
+
+  .slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 80px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+  }
+
+  .slide.active { opacity: 1; visibility: visible; }
+
+  .slide::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 0;
+  }
+
+  .slide > * { position: relative; z-index: 1; }
+
+  .slide::before { background: rgba(10,10,26,0.88); }
+  .slide-1::before { background: linear-gradient(135deg, rgba(10,10,26,0.75), rgba(178,77,255,0.25)); }
+  .slide-2::before { background: linear-gradient(135deg, rgba(10,10,26,0.82), rgba(0,212,255,0.18)); }
+  .slide-3::before { background: linear-gradient(135deg, rgba(10,10,26,0.78), rgba(255,0,110,0.22)); }
+  .slide-4::before { background: linear-gradient(135deg, rgba(10,10,26,0.80), rgba(0,230,118,0.20)); }
+  .slide-5::before { background: linear-gradient(135deg, rgba(10,10,26,0.82), rgba(255,214,10,0.18)); }
+  .slide-6::before { background: linear-gradient(135deg, rgba(10,10,26,0.78), rgba(0,212,255,0.22)); }
+  .slide-7::before { background: linear-gradient(135deg, rgba(10,10,26,0.78), rgba(255,45,45,0.22)); }
+  .slide-8::before { background: linear-gradient(135deg, rgba(10,10,26,0.80), rgba(255,107,53,0.20)); }
+  .slide-9::before { background: linear-gradient(135deg, rgba(10,10,26,0.82), rgba(0,230,118,0.18)); }
+  .slide-10::before { background: linear-gradient(135deg, rgba(10,10,26,0.80), rgba(255,0,110,0.20)); }
+  .slide-11::before { background: linear-gradient(135deg, rgba(10,10,26,0.82), rgba(255,214,10,0.18)); }
+  .slide-12::before { background: linear-gradient(135deg, rgba(10,10,26,0.78), rgba(178,77,255,0.22)); }
+  .slide-13::before { background: linear-gradient(135deg, rgba(10,10,26,0.75), rgba(255,107,53,0.25)); }
+
+  .content-box {
+    background: rgba(10, 10, 26, 0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 32px 40px;
+    max-width: 960px;
+    width: 100%;
+  }
+
+  .content-box-tight {
+    background: rgba(10, 10, 26, 0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 40px 48px;
+    max-width: 720px;
+  }
+
+  .content-box-wide {
+    background: rgba(10, 10, 26, 0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 32px 40px;
+    max-width: 1100px;
+    width: 100%;
+  }
+
+  .slide-title {
+    font-size: 3.2rem;
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 16px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  }
+
+  .slide-subtitle {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    max-width: 700px;
+  }
+
+  .slide-content ul {
+    list-style: none;
+    padding: 12px 0 12px 36px;
+  }
+
+  .slide-content ul li {
+    font-size: 1.35rem;
+    line-height: 1.6;
+    margin-bottom: 14px;
+    position: relative;
+  }
+
+  .slide-content ul li::before {
+    content: '';
+    position: absolute;
+    left: -28px;
+    top: 10px;
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--accent-cyan);
+  }
+
+  .slide-content ul.pink li::before { background: var(--accent-pink); }
+  .slide-content ul.yellow li::before { background: var(--accent-yellow); }
+  .slide-content ul.green li::before { background: var(--accent-green); }
+  .slide-content ul.orange li::before { background: var(--accent-orange); }
+  .slide-content ul.red li::before { background: var(--accent-red); }
+  .slide-content ul.purple li::before { background: var(--accent-purple); }
+
+  .slide-content ul li .source {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-top: 4px;
+    opacity: 0.7;
+  }
+
+  .accent-cyan { color: var(--accent-cyan); }
+  .accent-pink { color: var(--accent-pink); }
+  .accent-yellow { color: var(--accent-yellow); }
+  .accent-green { color: var(--accent-green); }
+  .accent-orange { color: var(--accent-orange); }
+  .accent-red { color: var(--accent-red); }
+  .accent-purple { color: var(--accent-purple); }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 6px 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+  }
+
+  .tag-cyan { background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.25); color: var(--accent-cyan); }
+  .tag-pink { background: rgba(255,0,110,0.12); border: 1px solid rgba(255,0,110,0.25); color: var(--accent-pink); }
+  .tag-yellow { background: rgba(255,214,10,0.12); border: 1px solid rgba(255,214,10,0.25); color: var(--accent-yellow); }
+  .tag-green { background: rgba(0,230,118,0.12); border: 1px solid rgba(0,230,118,0.25); color: var(--accent-green); }
+  .tag-orange { background: rgba(255,107,53,0.12); border: 1px solid rgba(255,107,53,0.25); color: var(--accent-orange); }
+  .tag-red { background: rgba(255,45,45,0.12); border: 1px solid rgba(255,45,45,0.25); color: var(--accent-red); }
+  .tag-purple { background: rgba(178,77,255,0.12); border: 1px solid rgba(178,77,255,0.25); color: var(--accent-purple); }
+
+  .quote-block {
+    font-size: 1.5rem;
+    font-style: italic;
+    line-height: 1.6;
+    border-left: 4px solid var(--accent-cyan);
+    padding: 16px 24px;
+    color: var(--text-secondary);
+    margin: 16px 0;
+  }
+
+  .quote-block .quote-source {
+    display: block;
+    font-size: 0.9rem;
+    font-style: normal;
+    margin-top: 12px;
+    font-weight: 600;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  .col-card {
+    background: rgba(10, 10, 26, 0.92);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 24px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .col-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .col-card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .col-card ul li {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 8px;
+    padding-left: 0;
+  }
+
+  .app-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+    max-width: 1060px;
+  }
+
+  .app-card {
+    background: rgba(10, 10, 26, 0.92);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .app-card:hover {
+    border-color: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+  }
+
+  .app-card .app-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .app-card .app-desc {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+
+  .app-card .app-stat {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    padding: 3px 10px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  .stat-big {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+
+  .stat-label {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+  }
+
+  .pitch-word {
+    display: inline-block;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 10px 18px;
+    margin: 6px;
+    font-size: 1.1rem;
+    transition: all 0.3s;
+  }
+
+  .pitch-word:hover { transform: scale(1.05); }
+
+  .pitch-section {
+    margin: 20px 0;
+    text-align: center;
+  }
+
+  .pitch-section .pitch-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  /* Discussion prompt */
+  .discuss-prompt {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.4;
+    max-width: 700px;
+  }
+
+  .discuss-sub {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-top: 16px;
+    max-width: 600px;
+    line-height: 1.6;
+  }
+
+  .poll-frame {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 24px 32px;
+    max-width: 700px;
+    width: 100%;
+  }
+
+  .poll-frame h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+
+  .poll-option {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 12px 18px;
+    margin-bottom: 10px;
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s;
+  }
+
+  .poll-option:hover {
+    border-color: var(--accent-cyan);
+    background: rgba(0,212,255,0.06);
+  }
+
+  .poll-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent-cyan);
+    min-width: 24px;
+  }
+
+  .big-link {
+    display: inline-block;
+    font-size: 2.2rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 20px 36px;
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    color: var(--accent-cyan);
+    text-decoration: none;
+    transition: all 0.3s;
+    margin-top: 16px;
+  }
+
+  .big-link:hover {
+    background: rgba(0,212,255,0.1);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 30px rgba(0,212,255,0.2);
+  }
+
+  .nav-bar {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100%;
+    height: 56px;
+    background: rgba(10,10,26,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    z-index: 100;
+    transition: width 0.3s ease;
+  }
+
+  .nav-bar.notes-open { width: calc(100% - var(--notes-width)); }
+
+  .nav-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-primary);
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1.1rem;
+  }
+
+  .nav-btn:hover { background: rgba(255,255,255,0.12); transform: scale(1.05); }
+
+  .slide-dots { display: flex; gap: 6px; align-items: center; }
+
+  .slide-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+
+  .slide-dot.active {
+    background: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(0,212,255,0.5);
+    transform: scale(1.3);
+  }
+
+  .slide-dot:hover { background: rgba(255,255,255,0.4); }
+
+  .slide-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    min-width: 50px;
+    text-align: center;
+  }
+
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+    transition: width 0.4s ease;
+    z-index: 101;
+  }
+
+  .notes-toggle {
+    position: fixed;
+    top: 16px; right: 16px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-secondary);
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    z-index: 200;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .notes-toggle:hover { background: rgba(255,255,255,0.12); color: var(--text-primary); }
+
+  .notes-toggle.active {
+    background: rgba(0,212,255,0.15);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    right: calc(var(--notes-width) + 16px);
+  }
+
+  .notes-panel {
+    position: fixed;
+    top: 0;
+    right: calc(-1 * var(--notes-width));
+    width: var(--notes-width);
+    height: 100vh;
+    background: var(--notes-bg);
+    border-left: 1px solid rgba(255,255,255,0.08);
+    z-index: 150;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    padding: 24px;
+  }
+
+  .notes-panel.open { right: 0; }
+
+  .notes-panel h2 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent-cyan);
+    margin-bottom: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .notes-panel h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .notes-section { display: none; }
+  .notes-section.active { display: block; }
+
+  .notes-section p {
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 14px;
+  }
+
+  .notes-section .talk-point {
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.03);
+    border-left: 3px solid var(--accent-cyan);
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  .notes-section .talk-point strong { color: var(--text-primary); }
+
+  .notes-section .cue {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent-pink);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 16px 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .notes-section .cue::before {
+    content: '';
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent-pink);
+  }
+
+  .notes-section .source-cite {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 6px 0;
+    border-top: 1px dashed rgba(255,255,255,0.06);
+    margin-top: 8px;
+  }
+
+  .notes-section .time-est {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    background: rgba(255,214,10,0.1);
+    color: var(--accent-yellow);
+    padding: 4px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+
+  .keyboard-hint {
+    position: fixed;
+    bottom: 70px; right: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.2);
+    text-align: right;
+    z-index: 99;
+    transition: right 0.3s ease;
+  }
+
+  .keyboard-hint.notes-open { right: calc(var(--notes-width) + 16px); }
+
+  .keyboard-hint kbd {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin: 0 2px;
+  }
+
+  @media (max-width: 900px) {
+    .slide { padding: 40px 32px; }
+    .slide-title { font-size: 2.2rem; }
+    .slide-subtitle { font-size: 1.2rem; }
+    .slide-content ul li { font-size: 1.1rem; }
+    .big-link { font-size: 1.6rem; padding: 16px 24px; }
+    .two-col { grid-template-columns: 1fr; gap: 20px; }
+    .app-grid { grid-template-columns: 1fr; }
+    .quote-block { font-size: 1.3rem; }
+    .content-box { padding: 20px 24px; }
+    .stat-big { font-size: 3.5rem; }
+    .discuss-prompt { font-size: 1.5rem; }
+    :root { --notes-width: 320px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<button class="notes-toggle" id="notesToggle" onclick="toggleNotes()">
+  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+  THEMULTIVERSE.SCHOOL
+</button>
+
+<!-- ===================== SLIDES ===================== -->
+<div class="presentation" id="presentation">
+
+  <!-- SLIDE 1: Title -->
+  <div class="slide slide-1 active" style="background-image: url('https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <div class="content-box-tight" style="text-align: center;">
+      <span class="tag tag-purple">Week 5 &middot; Day 2 &middot; March 10, 2026</span>
+      <h1 class="slide-title">Ideation Day</h1>
+      <p class="slide-subtitle">You voted. We're not building today. We're figuring out what to build and why it matters.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: The Vote -->
+  <div class="slide slide-2" style="background-image: url('https://images.pexels.com/photos/7103/writing-notes-idea-conference.jpg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-cyan">myr.quest/demo-crazy</span>
+    <h1 class="slide-title">Ranked Choice. <span class="accent-cyan">3 Rounds.</span></h1>
+    <div class="content-box-tight" style="text-align: center;">
+      <p class="slide-subtitle" style="margin-bottom: 24px;">Not "pick your favorite." Rank them all. Least popular gets eliminated, votes redistribute. Repeat until someone has majority.</p>
+      <p style="font-size: 1.6rem; font-weight: 700;">After 3 rounds:</p>
+      <p style="font-size: 1.2rem; color: var(--text-secondary); margin-top: 12px;">The executive function app won.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: The Winning Pitch -->
+  <div class="slide slide-3" style="background-image: url('https://images.pexels.com/photos/3808057/pexels-photo-3808057.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-pink">The Winning Pitch</span>
+    <h1 class="slide-title">Word by word</h1>
+    <div class="content-box">
+      <div class="pitch-section">
+        <span class="pitch-label">What is it</span>
+        <span class="pitch-word accent-cyan" style="border-color: rgba(0,212,255,0.3);">executive function app</span>
+      </div>
+      <div class="pitch-section">
+        <span class="pitch-label">Who is it for</span>
+        <span class="pitch-word accent-pink" style="border-color: rgba(255,0,110,0.3);">take the pressure off our partners!</span>
+      </div>
+      <div class="pitch-section">
+        <span class="pitch-label">What does it do</span>
+        <span class="pitch-word" style="border-color: rgba(0,230,118,0.3);"><span class="accent-green">helps guide you</span> / ease executive function burnout</span>
+        <span class="pitch-word" style="border-color: rgba(0,230,118,0.3);">based on <span class="accent-green">how you're feeling</span> and <span class="accent-green">what you have left to do</span></span>
+      </div>
+      <div class="pitch-section">
+        <span class="pitch-label">How is it different</span>
+        <span class="pitch-word" style="border-color: rgba(255,214,10,0.3);"><span class="accent-yellow">adjusts if today you're sad</span></span>
+        <span class="pitch-word" style="border-color: rgba(255,214,10,0.3);"><span class="accent-yellow">learns</span> based on what does and doesn't work</span>
+      </div>
+      <div class="pitch-section">
+        <span class="pitch-label">How does it reach you</span>
+        <span class="pitch-word" style="border-color: rgba(178,77,255,0.3);"><span class="accent-purple">AI powered</span> and can <span class="accent-purple">text you</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: Discussion - Partners -->
+  <div class="slide slide-4" style="background-image: url('https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-green">Let's talk</span>
+    <div class="content-box-tight" style="text-align: center;">
+      <p class="discuss-prompt">"Take the pressure off <span class="accent-green">our partners</span>"</p>
+      <p class="discuss-sub">What does that mean to you? What does that look like in real life?</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: What is executive function (casual) -->
+  <div class="slide slide-5" style="background-image: url('https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-yellow">Quick context</span>
+    <h1 class="slide-title">What is <span class="accent-yellow">executive function</span></h1>
+    <div class="content-box-tight" style="text-align: center;">
+      <p style="font-size: 1.3rem; line-height: 1.7; margin-bottom: 20px;">It's the part of your brain that handles getting things done. Starting tasks. Staying organized. Managing your time. Not losing your keys. Regulating your emotions so one bad thing doesn't ruin the whole day.</p>
+      <p style="font-size: 1.15rem; color: var(--text-secondary); line-height: 1.7;">When it's working, you don't notice it. When it's not, everything falls apart. And it gets worse when you're tired, stressed, burned out, or sad.</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: Discussion - You know what to do -->
+  <div class="slide slide-6" style="background-image: url('https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-cyan">Let's talk</span>
+    <div class="content-box-tight" style="text-align: center;">
+      <p class="discuss-prompt">Have you ever known <span class="accent-cyan">exactly</span> what you needed to do, but you just... couldn't?</p>
+      <p class="discuss-sub">That gap between knowing and doing. That's executive function. What does that feel like for you?</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: Apps in the space -->
+  <div class="slide slide-7" style="background-image: url('https://images.pexels.com/photos/3760790/pexels-photo-3760790.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-red">What already exists</span>
+    <h1 class="slide-title">Apps in <span class="accent-red">this space</span></h1>
+    <div class="app-grid">
+      <div class="app-card">
+        <div class="app-name accent-pink">Finch</div>
+        <div class="app-desc">Self-care pet. Grew without VC.</div>
+        <div class="app-stat" style="background: rgba(255,0,110,0.12); color: var(--accent-pink);">5M+ downloads</div>
+      </div>
+      <div class="app-card">
+        <div class="app-name accent-cyan">Tiimo</div>
+        <div class="app-desc">Visual planner for neurodivergent brains.</div>
+        <div class="app-stat" style="background: rgba(0,212,255,0.12); color: var(--accent-cyan);">iPhone App of the Year '25</div>
+      </div>
+      <div class="app-card">
+        <div class="app-name accent-green">Goblin Tools</div>
+        <div class="app-desc">AI task breakdown. One dev made it.</div>
+        <div class="app-stat" style="background: rgba(0,230,118,0.12); color: var(--accent-green);">Free, 70+ languages</div>
+      </div>
+      <div class="app-card">
+        <div class="app-name accent-yellow">Structured</div>
+        <div class="app-desc">Timeline planner. Simple.</div>
+        <div class="app-stat" style="background: rgba(255,214,10,0.12); color: var(--accent-yellow);">15M+ downloads</div>
+      </div>
+      <div class="app-card">
+        <div class="app-name accent-orange">Focusmate</div>
+        <div class="app-desc">Virtual body doubling.</div>
+        <div class="app-stat" style="background: rgba(255,107,53,0.12); color: var(--accent-orange);">Accountability sessions</div>
+      </div>
+      <div class="app-card">
+        <div class="app-name accent-purple">And Many More</div>
+        <div class="app-desc">What do you use?</div>
+     
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: Discussion - What works and doesn't -->
+  <div class="slide slide-8" style="background-image: url('https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-orange">Let's talk</span>
+    <div class="content-box-tight" style="text-align: center;">
+      <p class="discuss-prompt">Have you tried any of these? What <span class="accent-orange">worked?</span> What <span class="accent-orange">didn't?</span></p>
+      <p class="discuss-sub">Or any other productivity app, planner, system, hack. What stuck and what did you abandon after a week?</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: The honest part -->
+  <div class="slide slide-9" style="background-image: url('https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-green">Being honest</span>
+    <h1 class="slide-title">The stuff <span class="accent-green">nobody says</span></h1>
+    <div class="content-box">
+      <div class="slide-content">
+        <ul class="green">
+          <li>Most of these apps don't have evidence they actually work. A review of 109 of them found <strong>zero</strong> with real proof.
+            <span class="source">ScienceDirect/PubMed, 2020</span>
+          </li>
+          <li>Streaks and badges can create guilt instead of motivation. You miss a day and you feel worse, not better.</li>
+          <li>Every new app is another thing you have to manage. If using the tool requires the thing you're struggling with, it's not helping.</li>
+          <li>But: tools that show up at the right time, in the right way, for people who actually need them? Those do show real results.
+            <span class="source">Shepard et al., 2023; Frontiers in Education, 2025</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: People worth knowing about -->
+  <div class="slide slide-10" style="background-image: url('https://images.pexels.com/photos/1181533/pexels-photo-1181533.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-pink">People in this space</span>
+    <h1 class="slide-title">Worth <span class="accent-pink">looking up</span></h1>
+    <div class="content-box">
+      <div class="slide-content">
+        <ul class="pink">
+          <li><strong>Dr. K / Healthy Gamer GG</strong> &ndash; Harvard psychiatrist, Twitch streamer, was addicted to games himself. Runs EF coaching groups. Accessible and real. <span style="color: var(--text-secondary); font-size: 0.9rem;">healthygamer.gg</span></li>
+          <li><strong>Bren&eacute; Brown</strong> &ndash; Shame and perfectionism make executive function worse. Her burnout episode with the Nagoski sisters is worth a listen.</li>
+          <li><strong>Emily &amp; Amelia Nagoski</strong> &ndash; Wrote <em>Burnout</em>. Removing the stressor isn't enough, your body still needs to complete the stress cycle.</li>
+          <li><strong>Dr. Gloria Mark</strong> (UC Irvine) &ndash; Studies attention. 23+ min to refocus after an interruption. Wrote <em>Attention Span</em>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 11: The design constraint -->
+  <div class="slide slide-11" style="background-image: url('https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-yellow">Our constraint</span>
+    <div class="content-box-tight" style="text-align: center;">
+      <p class="discuss-prompt">If using the app <span class="accent-yellow">requires</span> executive function, we failed.</p>
+      <p class="discuss-sub">So how do we make something that's simple enough to use on your worst day, but smart enough to actually help?</p>
+    </div>
+  </div>
+
+  <!-- SLIDE 12: Polls -->
+  <div class="slide slide-12" style="background-image: url('https://images.pexels.com/photos/3184306/pexels-photo-3184306.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-purple">Your turn</span>
+    <h1 class="slide-title">Ranked choice, <span class="accent-purple">round 2</span></h1>
+    <div class="content-box">
+      <div class="slide-content">
+        <ul class="purple">
+          <li><strong>Poll 1: How do users interact with this thing?</strong> Mood check-in first? Chat? Visual timeline? SMS only? Some mix?</li>
+          <li><strong>Poll 2: What's the AI's personality?</strong> Gentle coach? Blunt? Quiet? Chaotic?</li>
+          <li><strong>Poll 3: What do we build first?</strong> Task decomposition? Mood-aware scheduling? Text nudges? Daily reflection?</li>
+          <li><strong>Poll 4: What do we call it?</strong></li>
+        </ul>
+      </div>
+      <div style="text-align: center; margin-top: 16px;">
+        <a class="big-link" href="https://myr.quest/demo-crazy" target="_blank" style="border-color: var(--accent-purple); color: var(--accent-purple);">myr.quest/demo-crazy</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 13: Tomorrow -->
+  <div class="slide slide-13" style="background-image: url('https://images.pexels.com/photos/3184287/pexels-photo-3184287.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <span class="tag tag-orange">Wednesday</span>
+    <h1 class="slide-title">Tomorrow we build</h1>
+    <div class="content-box-tight" style="text-align: center;">
+      <p style="font-size: 1.3rem; margin-bottom: 20px;">Today: vote, discuss, decide.</p>
+      <p style="font-size: 1.3rem; margin-bottom: 20px;">Wednesday through Friday: ship it.</p>
+      <div style="margin-top: 20px;">
+        <a class="big-link" href="https://myr.quest/demo-crazy" target="_blank" style="border-color: var(--accent-orange); color: var(--accent-orange);">go vote</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===================== NOTES PANEL ===================== -->
+<div class="notes-panel" id="notesPanel">
+
+  <div class="notes-section active" data-slide="1">
+    <h2>Slide 1</h2>
+    <h3>Title</h3>
+    <div class="time-est">~1 min</div>
+    <div class="talk-point">Set the tone: today is different. No code. Just thinking and deciding together. Yesterday was heavy news. Today is about what we're making this week.</div>
+  </div>
+
+  <div class="notes-section" data-slide="2">
+    <h2>Slide 2</h2>
+    <h3>The Vote</h3>
+    <div class="time-est">~4 min</div>
+    <div class="talk-point"><strong>Pull up myr.quest/demo-crazy and show actual results.</strong> Walk through how ranked choice works briefly: not just who got the most first-place votes. Least popular gets eliminated, their votes go to their second choice. Repeat until someone has majority.</div>
+    <div class="talk-point">It took 3 rounds. That means it was close. The EF app won because the most people could get behind it, even if it wasn't everyone's #1.</div>
+    <div class="cue">Discussion</div>
+    <p>"Why do you think this one won over the others?" Let a few people talk.</p>
+  </div>
+
+  <div class="notes-section" data-slide="3">
+    <h2>Slide 3</h2>
+    <h3>The Winning Pitch</h3>
+    <div class="time-est">~5 min</div>
+    <div class="talk-point">This is the actual text from the winning submission. Go through each piece. The pitch is solid because it answers the basic questions: what, who, how, what's different, how it reaches you.</div>
+    <div class="talk-point"><strong>"Take the pressure off our partners"</strong> is the emotional core. It's about the person who has to remind you, check on you, ask if you did the thing. That relationship tax.</div>
+    <div class="talk-point"><strong>"Adjusts if today you're sad"</strong> is the differentiator. Most planners treat every day the same. A bad sleep Tuesday isn't the same as a good energy Tuesday.</div>
+    <div class="talk-point"><strong>"Can text you"</strong> is interesting because it means the app comes to you. You don't have to remember to open it. That's a design choice worth unpacking.</div>
+  </div>
+
+  <div class="notes-section" data-slide="4">
+    <h2>Slide 4</h2>
+    <h3>Discussion: Partners</h3>
+    <div class="time-est">~8 min</div>
+    <div class="talk-point"><strong>This is the first big discussion.</strong> Let it breathe. The pitch specifically said "partners" and that resonated enough to win the vote. Why?</div>
+    <div class="talk-point">It could mean romantic partners, spouses, roommates, parents, coworkers. Anyone who ends up picking up slack or being the reminder system for someone else.</div>
+    <div class="talk-point">Let people share if they want. This might get personal and that's okay. Some people are the ones who struggle with this, some are the partners. Both perspectives are useful for designing the app.</div>
+    <div class="cue">Listen</div>
+    <p>Your job here is to facilitate, not lecture. Ask follow-ups. "What does that look like day to day?" "How does that feel on both sides?" Take notes on what people say; it's design research.</p>
+  </div>
+
+  <div class="notes-section" data-slide="5">
+    <h2>Slide 5</h2>
+    <h3>What is EF</h3>
+    <div class="time-est">~2 min</div>
+    <div class="talk-point">Keep this casual. You're not giving a medical definition. You're just making sure everyone's on the same page about what we're talking about.</div>
+    <div class="talk-point">The key thing: executive function gets worse when you're tired, stressed, sad, or burned out. It's not a fixed trait. It fluctuates. That's why the winning pitch said "adjusts if today you're sad."</div>
+    <div class="source-cite">If anyone wants to go deeper: Dr. K on Healthy Gamer GG has great accessible explainers. Dr. Russell Barkley's free fact sheets at russellbarkley.org are the clinical standard.</div>
+  </div>
+
+  <div class="notes-section" data-slide="6">
+    <h2>Slide 6</h2>
+    <h3>Discussion: The Gap</h3>
+    <div class="time-est">~6 min</div>
+    <div class="talk-point"><strong>Second big discussion.</strong> "Have you ever known exactly what you needed to do but couldn't make yourself do it?" Basically everyone has experienced this. It's not just a neurodivergent thing.</div>
+    <div class="talk-point">The point isn't to diagnose anyone or make this clinical. It's to make the problem concrete so we can design for it. What does that stuck feeling actually feel like? What breaks the logjam? What makes it worse?</div>
+    <div class="talk-point">Whatever people share here is design input. If someone says "I just need someone to tell me the first step," that's a feature. If someone says "I need someone to not judge me," that's a tone decision for the AI.</div>
+    <div class="cue">Listen + Note</div>
+    <p>Write down what people say. This feeds directly into the polls later.</p>
+  </div>
+
+  <div class="notes-section" data-slide="7">
+    <h2>Slide 7</h2>
+    <h3>Existing Apps</h3>
+    <div class="time-est">~3 min</div>
+    <div class="talk-point">Quick overview. Don't go deep on each one. The point is just: this space exists, people are building in it, some of them are doing well.</div>
+    <div class="talk-point"><strong>Finch:</strong> Virtual pet that mirrors your self-care. $2.9M/month revenue, bootstrapped. The pet model works because you're taking care of something else, and that externalizes the self-care.</div>
+    <div class="talk-point"><strong>Tiimo:</strong> Won iPhone App of the Year 2025. Visual planner with icons and timers. Built specifically for neurodivergent users.</div>
+    <div class="talk-point"><strong>Goblin Tools:</strong> One developer made this. "Magic ToDo" breaks overwhelming tasks into small steps. Free. Does one thing well.</div>
+    <div class="talk-point"><strong>Healthy Gamer:</strong> Dr. K (Dr. Alok Kanojia). Harvard-trained psychiatrist who streams on Twitch. Was addicted to video games himself, went to an ashram in India, came back, became a psychiatrist. Runs executive function coaching groups online. Talks about this stuff in a way that doesn't feel like a textbook. 6M+ YouTube subscribers. healthygamer.gg</div>
+    <div class="source-cite">Finch: Jo Ash Sakula, Medium 2025; SensorTower. Tiimo: Apple App Store Awards 2025; Fast Company 2025. Goblin Tools: goblin.tools. Structured: structured.app. Healthy Gamer: healthygamer.gg; Wikipedia.</div>
+  </div>
+
+  <div class="notes-section" data-slide="8">
+    <h2>Slide 8</h2>
+    <h3>Discussion: What Works/Doesn't</h3>
+    <div class="time-est">~8 min</div>
+    <div class="talk-point"><strong>Third big discussion, and probably the most useful one.</strong> Let people share their personal app/system graveyard. Everyone has one. The to-do app they used for 3 days. The planner they bought and never opened. The habit tracker that made them feel bad.</div>
+    <div class="talk-point">Listen for patterns: What made them try it? What made them stop? Was it too complicated? Too many notifications? Not enough? Made them feel guilty? Forgot it existed?</div>
+    <div class="talk-point">Also listen for what DID stick. If someone says "I've used the same app for 2 years," ask them why. That's gold for our design.</div>
+    <div class="cue">Design Research</div>
+    <p>Everything said in this discussion is design research. Write it down. This is more valuable than any study.</p>
+  </div>
+
+  <div class="notes-section" data-slide="9">
+    <h2>Slide 9</h2>
+    <h3>Being Honest</h3>
+    <div class="time-est">~3 min</div>
+    <div class="talk-point">Don't dwell here. Just be straight about it: most of these apps don't have evidence they work. We should know that going in.</div>
+    <div class="talk-point">The 0/109 stat is from a systematic review in ScienceDirect/PubMed (2020). None of 109 ADHD mobile apps provided scientific evidence for effectiveness.</div>
+    <div class="talk-point">But: tools designed for people who actually need them, that show up at the right moment, do show real results. A 2023 review (Shepard et al.) found medium-to-large effects for clinical populations. An 8-week study in Frontiers in Education (2025) found gamified tools improved real outcomes and the improvements stuck.</div>
+    <div class="talk-point">The framing: we're not going to pretend our app cures anything. We're building a tool. A tool that might help someone get through a hard day. That's enough.</div>
+    <div class="source-cite">ScienceDirect/PubMed 2020; Shepard et al. 2023; Frontiers in Education 2025; FTC v. Lumosity 2016; Stanford/Max Planck consensus 2014</div>
+  </div>
+
+  <div class="notes-section" data-slide="10">
+    <h2>Slide 10</h2>
+    <h3>People Worth Knowing</h3>
+    <div class="time-est">~3 min</div>
+    <div class="talk-point">Reference slide. Don't lecture on each person. Just give enough for people to look them up later if they're interested.</div>
+    <div class="talk-point"><strong>Dr. K:</strong> The one to highlight most. His content is accessible, he's been through it himself, and he literally runs EF coaching groups. If anyone wants to understand this space better, start with his YouTube.</div>
+    <div class="talk-point"><strong>Bren&eacute; Brown:</strong> Her point about shame is relevant. When you feel shame about not getting things done, it makes it harder to get things done. Vicious cycle. Her podcast episode with the Nagoski sisters on burnout is directly relevant to what we're building.</div>
+    <div class="talk-point"><strong>Nagoski sisters:</strong> Key idea from <em>Burnout</em>: the stress response is a cycle. Removing the stressor doesn't complete the cycle. Your body still needs to process it through movement, breathing, crying, creative expression, etc. An app that only manages tasks but ignores how you feel is missing this.</div>
+    <div class="talk-point"><strong>Gloria Mark:</strong> 23 minutes to refocus after an interruption. Average screen attention span down to 47 seconds. Wrote <em>Attention Span</em> (2023). Her data is useful context for why notification-heavy apps backfire.</div>
+    <div class="source-cite">Dr. K: healthygamer.gg, Wikipedia. Brown: brenebrown.com. Nagoski: <em>Burnout</em> (2019). Mark: gloriamark.com, UC Irvine research.</div>
+  </div>
+
+  <div class="notes-section" data-slide="11">
+    <h2>Slide 11</h2>
+    <h3>The Constraint</h3>
+    <div class="time-est">~5 min</div>
+    <div class="talk-point">This is the design principle for the whole week. Read it, let it land, then open it up.</div>
+    <div class="talk-point">"If using the app requires executive function, we failed." That means: if someone has to navigate menus, remember to open it, figure out a complex interface, configure settings... we've already lost the people we're building for.</div>
+    <div class="talk-point">The question on screen is real: how do we make something simple enough for your worst day, but smart enough to actually be useful?</div>
+    <div class="cue">Discussion</div>
+    <p>Open the floor: "What would that look like? What's the simplest version of this that could actually help?" Let people riff for a few minutes before moving to the polls. This is the transition from discussion to decision.</p>
+  </div>
+
+  <div class="notes-section" data-slide="12">
+    <h2>Slide 12</h2>
+    <h3>Polls</h3>
+    <div class="time-est">~10 min</div>
+    <div class="talk-point"><strong>Have the polls ready on myr.quest/demo-crazy before class.</strong> Give people 5-8 minutes to vote on all four. Walk around and help if anyone's confused.</div>
+    <div class="talk-point">Poll 1 is the biggest decision. It shapes the whole architecture. SMS-only means no frontend. Chat means conversational AI. Visual timeline means rich UI. This determines the week.</div>
+    <div class="talk-point">Poll 2 (personality) is more important than it sounds. A gentle coach says different things at 2pm than a blunt accountability partner does.</div>
+    <div class="talk-point">Poll 3 (feature priority) determines what we build first on Wednesday. Three build days left.</div>
+    <div class="talk-point">Poll 4 (name) makes the project feel real.</div>
+    <div class="cue">Activity</div>
+    <p>Phones out. myr.quest/demo-crazy. Rank everything. ~5 minutes to vote, then pull up results together and discuss.</p>
+  </div>
+
+  <div class="notes-section" data-slide="13">
+    <h2>Slide 13</h2>
+    <h3>Close</h3>
+    <div class="time-est">~2 min</div>
+    <div class="talk-point">Quick close. Wednesday we code. The polls determine what we build. If anyone hasn't voted, now's the time.</div>
+    <div class="talk-point">If anyone wants to go deeper before tomorrow: Dr. K's YouTube channel, Bren&eacute; Brown's burnout podcast episode, or just try a few of the apps from slide 7 and come in with opinions.</div>
+  </div>
+
+</div>
+
+<!-- ===================== BOTTOM NAV ===================== -->
+<nav class="nav-bar" id="navBar">
+  <button class="nav-btn" onclick="changeSlide(-1)">&#8592;</button>
+  <div class="slide-dots" id="slideDots"></div>
+  <button class="nav-btn" onclick="changeSlide(1)">&#8594;</button>
+  <span class="slide-counter" id="slideCounter"></span>
+</nav>
+
+<div class="keyboard-hint" id="keyboardHint">
+  <kbd>&larr;</kbd> <kbd>&rarr;</kbd> navigate &nbsp; <kbd>N</kbd> notes &nbsp; <kbd>F</kbd> fullscreen
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const notesSections = document.querySelectorAll('.notes-section');
+  const dotsContainer = document.getElementById('slideDots');
+  const counter = document.getElementById('slideCounter');
+  const progressBar = document.getElementById('progressBar');
+  const notesPanel = document.getElementById('notesPanel');
+  const notesToggle = document.getElementById('notesToggle');
+  const presentation = document.getElementById('presentation');
+  const navBar = document.getElementById('navBar');
+  const keyboardHint = document.getElementById('keyboardHint');
+  let current = 0;
+  let notesOpen = false;
+
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'slide-dot' + (i === 0 ? ' active' : '');
+    dot.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(dot);
+  });
+
+  function goToSlide(n) {
+    slides[current].classList.remove('active');
+    notesSections[current].classList.remove('active');
+    dotsContainer.children[current].classList.remove('active');
+    current = n;
+    slides[current].classList.add('active');
+    notesSections[current].classList.add('active');
+    dotsContainer.children[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    progressBar.style.width = ((current + 1) / slides.length * 100) + '%';
+  }
+
+  function changeSlide(dir) {
+    const next = current + dir;
+    if (next >= 0 && next < slides.length) goToSlide(next);
+  }
+
+  function toggleNotes() {
+    notesOpen = !notesOpen;
+    notesPanel.classList.toggle('open', notesOpen);
+    notesToggle.classList.toggle('active', notesOpen);
+    presentation.classList.toggle('notes-open', notesOpen);
+    navBar.classList.toggle('notes-open', notesOpen);
+    keyboardHint.classList.toggle('notes-open', notesOpen);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+    else if (e.key === 'n' || e.key === 'N') toggleNotes();
+    else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+    else if (e.key === 'Home') goToSlide(0);
+    else if (e.key === 'End') goToSlide(slides.length - 1);
+  });
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+  document.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].screenX;
+    if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1);
+  });
+
+  goToSlide(0);
+</script>
+
+</body>
+</html>
