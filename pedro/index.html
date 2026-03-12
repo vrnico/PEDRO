@@ -28,6 +28,11 @@
       --shadow: 0 4px 20px rgba(0,0,0,0.3);
       --radius: 16px;
       --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --diff-1: #8ed8d0;
+      --diff-2: #8ed4a0;
+      --diff-3: #f5e285;
+      --diff-4: #f5c47a;
+      --diff-5: #f5a07a;
     }
 
     html, body {
@@ -235,6 +240,270 @@
       font-size: 11px;
       color: var(--text-muted);
       margin-top: 4px;
+    }
+
+    /* ===== FAVORITE DAILIES BUTTON ===== */
+    #daily-btn {
+      margin: 8px 12px 0;
+      background: var(--bg-card);
+      border: 1px dashed rgba(142,216,208,0.4);
+      border-radius: 10px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    #daily-btn:active { background: #3a2a5e; }
+    .daily-btn-label { font-size: 13px; font-weight: 700; color: var(--diff-1); }
+    .daily-btn-hint { font-size: 11px; color: var(--text-muted); }
+
+    /* ===== FAVORITE DAILIES MODAL ===== */
+    #daily-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+
+    #daily-modal.active { display: flex; }
+
+    .daily-content {
+      background: var(--bg-card);
+      border-radius: 24px 24px 0 0;
+      padding: 20px 16px 8px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.5);
+    }
+
+    .daily-handle {
+      width: 40px; height: 4px;
+      background: var(--text-muted);
+      border-radius: 4px;
+      margin: 0 auto 16px;
+    }
+
+    .daily-title {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--accent-yellow);
+      margin-bottom: 12px;
+    }
+
+    /* Mood picker */
+    .mood-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .mood-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .mood-picker { display: flex; gap: 6px; }
+
+    .mood-btn {
+      background: var(--bg-input);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      color: var(--text-secondary);
+      font-family: 'Nunito', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mood-btn:hover { border-color: var(--text-muted); }
+    .mood-btn.active { border-color: var(--accent-yellow); color: var(--accent-yellow); }
+
+    /* Diff group header inside all-favorites */
+    .diff-group { margin-bottom: 10px; }
+
+    .diff-group-header {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      padding-left: 4px;
+    }
+
+    /* Task rows (picks + all favorites) */
+    .daily-task-row {
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 5px;
+      border-left: 3px solid transparent;
+      transition: background 0.15s;
+    }
+
+    .daily-task-row[data-diff="1"] { border-left-color: var(--diff-1); }
+    .daily-task-row[data-diff="2"] { border-left-color: var(--diff-2); }
+    .daily-task-row[data-diff="3"] { border-left-color: var(--diff-3); }
+    .daily-task-row[data-diff="4"] { border-left-color: var(--diff-4); }
+    .daily-task-row[data-diff="5"] { border-left-color: var(--diff-5); }
+
+    .daily-task-row.done-today { background: rgba(142,216,208,0.12); }
+    .daily-task-row.done-today .daily-task-label { color: var(--diff-1); font-weight: 700; }
+
+    .daily-check {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--text-muted);
+      background: transparent;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      color: transparent;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .daily-check:hover { border-color: var(--accent-green); }
+
+    .daily-task-row.done-today .daily-check {
+      background: var(--accent-green);
+      border-color: var(--accent-green);
+      color: white;
+    }
+
+    .daily-task-emoji { font-size: 16px; flex-shrink: 0; }
+    .daily-task-label { flex: 1; font-size: 13px; font-weight: 600; color: var(--text-primary); min-width: 0; }
+
+    .diff-badge {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 700;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .diff-badge-tap { cursor: pointer; }
+    .diff-badge-tap:hover { color: var(--accent-orange); }
+
+    /* Edit mode stepper */
+    .diff-editor { display: none; align-items: center; gap: 3px; flex-shrink: 0; }
+    .diff-editor.visible { display: flex; }
+
+    .diff-stepper {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 5px;
+      color: var(--text-secondary);
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px; font-weight: 700;
+      width: 22px; height: 22px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .diff-stepper:hover { background: var(--accent-orange); color: white; border-color: var(--accent-orange); }
+
+    /* Bottom buttons */
+    .daily-edit-toggle {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      padding: 7px 14px;
+      width: 100%;
+      margin-top: 10px;
+      transition: all 0.2s;
+    }
+
+    .daily-edit-toggle:hover, .daily-edit-toggle.active {
+      border-color: var(--accent-orange);
+      color: var(--accent-orange);
+    }
+
+    .daily-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 12px;
+      width: 100%;
+      margin-top: 2px;
+    }
+
+    /* ===== CUSTOM TASK FORM ===== */
+    .custom-form-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .custom-task-input {
+      flex: 1;
+      background: var(--bg-input);
+      border: 2px solid transparent;
+      border-radius: 10px;
+      padding: 9px 12px;
+      color: var(--text-primary);
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.2s;
+      min-width: 0;
+    }
+
+    .custom-task-input::placeholder { color: var(--text-muted); }
+    .custom-task-input:focus { border-color: var(--accent-orange); }
+
+    #add-custom-area { margin-top: 12px; }
+
+    .custom-task-row-delete {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px 6px;
+      flex-shrink: 0;
+      transition: color 0.2s;
+      line-height: 1;
+    }
+
+    .custom-task-row-delete:hover { color: var(--accent-pink); }
+
+    #new-diff-display {
+      font-size: 12px;
+      white-space: nowrap;
+      min-width: 40px;
+      text-align: center;
     }
 
     .task-delete {
@@ -625,6 +894,12 @@
     <button class="roll-btn" onclick="event.stopPropagation(); openRoller()">🎲 Roll</button>
   </section>
 
+  <!-- DAILY TASKS SHORTCUT -->
+  <button id="daily-btn" onclick="openDailyModal()">
+    <span class="daily-btn-label">📋 Favorite Dailies</span>
+    <span class="daily-btn-hint">Your daily task preferences for Pedro →</span>
+  </button>
+
   <!-- TASK LIST -->
   <div id="task-list"></div>
 
@@ -636,6 +911,49 @@
     <button class="input-btn btn-add" onclick="addTaskFromInput()" title="Add task">+</button>
     <input type="file" id="photo-input" accept="image/*" capture="environment" onchange="handlePhoto(event)">
   </section>
+
+  <!-- FAVORITE DAILIES MODAL -->
+  <div id="daily-modal">
+    <div class="daily-content">
+      <div class="daily-handle"></div>
+      <div class="daily-title">📋 Favorite Dailies</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;line-height:1.5;">These are your preferred daily tasks — Pedro uses them to suggest what to tackle based on how you're feeling. Tap 🍉 on any task to adjust its difficulty.</div>
+
+      <div class="mood-row">
+        <span class="mood-label">For when I'm feeling:</span>
+        <div class="mood-picker">
+          <button class="mood-btn active" data-mood="all"   onclick="setMoodFilter('all')"  >📋 All</button>
+          <button class="mood-btn" data-mood="low"   onclick="setMoodFilter('low')"  >🌧️ Low</button>
+          <button class="mood-btn" data-mood="okay"  onclick="setMoodFilter('okay')" >🌤️ Okay</button>
+          <button class="mood-btn" data-mood="happy" onclick="setMoodFilter('happy')">✨ Happy</button>
+        </div>
+      </div>
+
+      <div id="all-favorites"></div>
+      <div id="custom-favorites"></div>
+
+      <div id="add-custom-area">
+        <button id="add-custom-btn" class="daily-edit-toggle" onclick="showAddCustomForm()">＋ Add your own</button>
+        <div id="add-custom-form" style="display:none;">
+          <div class="custom-form-row">
+            <input type="text" id="custom-task-input" class="custom-task-input" placeholder="⭐ Name your task..." maxlength="60">
+            <div class="diff-editor visible">
+              <button class="diff-stepper" onclick="changeNewDiff(-1)">−</button>
+              <span id="new-diff-display">🍉</span>
+              <button class="diff-stepper" onclick="changeNewDiff(+1)">+</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button class="daily-edit-toggle" style="flex:1;" onclick="saveCustomTask()">Save</button>
+            <button class="daily-edit-toggle" style="flex:1;" onclick="hideAddCustomForm()">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <button id="done-editing-btn" class="daily-edit-toggle" onclick="toggleEditDiff()" style="display:none;">✅ Done editing difficulties</button>
+      <button class="daily-close" onclick="closeDailyModal()">close</button>
+    </div>
+  </div>
 
   <!-- ROLLER MODAL -->
   <div id="roller-modal">
@@ -1055,12 +1373,56 @@ const PERSONALITIES = [
 ];
 
 // ============================================================
+// FAVORITE DAILIES DATA
+// ============================================================
+const DAILY_TASKS = [
+  { emoji: '🛏️', label: 'Get out of bed',                  diff: 1 },
+  { emoji: '💧', label: 'Drink a glass of water',           diff: 1 },
+  { emoji: '🪟', label: 'Open a window',                    diff: 1 },
+  { emoji: '💊', label: 'Take medication',                  diff: 1 },
+  { emoji: '🦷', label: 'Brush teeth',                      diff: 2 },
+  { emoji: '👕', label: 'Get dressed',                      diff: 2 },
+  { emoji: '📱', label: 'Check messages',                   diff: 2 },
+  { emoji: '🍳', label: 'Eat breakfast',                    diff: 2 },
+  { emoji: '😊', label: 'Do one thing that makes me happy', diff: 2 },
+  { emoji: '🧘', label: 'Stretch',                          diff: 2 },
+  { emoji: '🚿', label: 'Shower',                           diff: 3 },
+  { emoji: '🍽️', label: 'Do the dishes',                   diff: 3 },
+  { emoji: '🚶', label: 'Walk',                             diff: 3 },
+  { emoji: '🌟', label: 'Pick goals for tomorrow',          diff: 3 },
+  { emoji: '🍲', label: 'Cook a meal',                      diff: 4 },
+  { emoji: '🧺', label: 'Do a load of laundry',             diff: 4 },
+  { emoji: '🧹', label: 'Tidy one space',                   diff: 4 },
+  { emoji: '🛒', label: 'Grocery run',                      diff: 5 },
+  { emoji: '💸', label: 'Pay a bill',                       diff: 5 },
+  { emoji: '📞', label: 'Make an appointment',              diff: 5 },
+];
+
+const DIFF_LABELS = {
+  1: { label: 'Very easy' },
+  2: { label: 'Easy' },
+  3: { label: 'Medium' },
+  4: { label: 'Takes some effort' },
+  5: { label: 'Big task' },
+};
+
+function diffDisplay(n) {
+  return '🍉'.repeat(n);
+}
+// ============================================================
 // STATE
 // ============================================================
 let state = {
   tasks: [],
   personality: null,
-  personalityDate: null
+  personalityDate: null,
+  dailies: {
+    mood: 'all',
+    done: [],
+    customDiff: {},
+    picks: [],
+    customTasks: []
+  }
 };
 
 function saveState() {
@@ -1077,6 +1439,14 @@ function loadState() {
       state.tasks = parsed.tasks || [];
       state.personality = parsed.personality || null;
       state.personalityDate = parsed.personalityDate || null;
+      const d = parsed.dailies || {};
+      state.dailies = {
+        mood:        d.mood        || 'all',
+        done:        d.done        || [],
+        customDiff:  d.customDiff  || {},
+        picks:       d.picks       || [],
+        customTasks: d.customTasks || []
+      };
     }
   } catch(e) { /* corrupted or unavailable */ }
 }
@@ -1396,6 +1766,250 @@ function updateVoiceButton() {
   } else {
     btn.style.display = 'flex';
   }
+}
+
+// ============================================================
+// FAVORITE DAILIES
+// ============================================================
+let editDiffMode = false;
+
+function getEffectiveDiff(task) {
+  return state.dailies.customDiff[task.label] || task.diff;
+}
+
+// TODO: used in Start Today feature — weighted lottery picks tasks by mood
+// function generatePicks(mood) {
+//   const weights = {
+//     low:   [0, 6, 3, 0, 0, 0],
+//     okay:  [0, 2, 4, 3, 1, 0],
+//     happy: [0, 1, 2, 4, 3, 1],
+//   };
+//   const w = weights[mood];
+//   const pool = DAILY_TASKS.filter(t => w[getEffectiveDiff(t)] > 0);
+//   const picks = [];
+//   const avail = [...pool];
+//   for (let i = 0; i < Math.min(4, avail.length); i++) {
+//     const total = avail.reduce((s, t) => s + w[getEffectiveDiff(t)], 0);
+//     let r = Math.random() * total;
+//     for (let j = 0; j < avail.length; j++) {
+//       r -= w[getEffectiveDiff(avail[j])];
+//       if (r <= 0) { picks.push(avail[j].label); avail.splice(j, 1); break; }
+//     }
+//   }
+//   state.dailies.picks = picks;
+//   state.dailies.mood = mood;
+//   state.dailies.date = new Date().toISOString().slice(0, 10);
+//   saveState();
+// }
+
+const MOOD_FILTER_RANGE = {
+  all:   [1, 2, 3, 4, 5],
+  low:   [1, 2],
+  okay:  [2, 3],
+  happy: [3, 4, 5],
+};
+
+function setMoodFilter(mood) {
+  state.dailies.mood = mood;
+  saveState();
+  renderDailyModal();
+}
+
+function toggleDailyDone(label) {
+  const idx = state.dailies.done.indexOf(label);
+  if (idx >= 0) {
+    state.dailies.done.splice(idx, 1);
+  } else {
+    state.dailies.done.push(label);
+    if (state.personality) {
+      const msgs = state.personality.praise;
+      showToast(`${state.personality.emoji} ${msgs[Math.floor(Math.random() * msgs.length)]}`);
+    }
+  }
+  saveState();
+  renderDailyModal();
+}
+
+function changeDiff(label, delta) {
+  const task = DAILY_TASKS.find(t => t.label === label);
+  if (!task) return;
+  const current = getEffectiveDiff(task);
+  const next = Math.max(1, Math.min(5, current + delta));
+  if (next === task.diff) {
+    delete state.dailies.customDiff[label];
+  } else {
+    state.dailies.customDiff[label] = next;
+  }
+  saveState();
+  renderDailyModal();
+}
+
+function toggleEditDiff() {
+  editDiffMode = !editDiffMode;
+  const doneBtn = document.getElementById('done-editing-btn');
+  if (doneBtn) doneBtn.style.display = editDiffMode ? 'block' : 'none';
+  renderDailyModal();
+}
+
+
+function buildTaskRow(task) {
+  const diff = getEffectiveDiff(task);
+  const isDone = state.dailies.done.includes(task.label);
+  const labelSafe = task.label.replace(/'/g, "\\'");
+  const isEditing = editDiffMode;
+  const badge = diffDisplay(diff);
+
+  const rightSide = isEditing
+    ? `<div class="diff-editor visible">
+         <button class="diff-stepper" onclick="changeDiff('${labelSafe}',-1)">−</button>
+         <span class="diff-badge">${badge}</span>
+         <button class="diff-stepper" onclick="changeDiff('${labelSafe}',+1)">+</button>
+       </div>`
+    : `<span class="diff-badge diff-badge-tap" onclick="toggleEditDiff()" title="Tap to edit difficulty">${badge}</span>`;
+
+  return `
+    <div class="daily-task-row ${isDone ? 'done-today' : ''}" data-diff="${diff}">
+      <button class="daily-check" onclick="toggleDailyDone('${labelSafe}')">${isDone ? '✓' : ''}</button>
+      <span class="daily-task-emoji">${task.emoji}</span>
+      <span class="daily-task-label">${task.label}</span>
+      ${rightSide}
+    </div>`;
+}
+
+function renderDailyModal() {
+  const mood = state.dailies.mood || 'all';
+  const allowedDiffs = MOOD_FILTER_RANGE[mood] || MOOD_FILTER_RANGE.all;
+
+  // Mood filter buttons
+  document.querySelectorAll('.mood-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mood === mood);
+  });
+
+  // Preset tasks filtered by mood range, grouped by difficulty
+  const allFavEl = document.getElementById('all-favorites');
+  let html = '';
+  for (let d = 1; d <= 5; d++) {
+    if (!allowedDiffs.includes(d)) continue;
+    const group = DAILY_TASKS.filter(t => getEffectiveDiff(t) === d);
+    if (!group.length) continue;
+    html += `<div class="diff-group">
+      <div class="diff-group-header">${diffDisplay(d)} — ${DIFF_LABELS[d].label}</div>
+      ${group.map(t => buildTaskRow(t)).join('')}
+    </div>`;
+  }
+  allFavEl.innerHTML = html;
+
+  // Custom tasks — always show all of them regardless of filter
+  const customEl = document.getElementById('custom-favorites');
+  const custom = state.dailies.customTasks || [];
+  if (custom.length) {
+    customEl.innerHTML = `<div class="diff-group">
+      <div class="diff-group-header">⭐ Your custom tasks</div>
+      ${custom.map(t => buildCustomTaskRow(t)).join('')}
+    </div>`;
+  } else {
+    customEl.innerHTML = '';
+  }
+}
+
+// ============================================================
+// CUSTOM TASK FORM
+// ============================================================
+let newCustomDiff = 1;
+
+function isEmoji(str) {
+  // Match any emoji at the start of a string
+  const emojiRegex = /^\p{Emoji}/u;
+  return emojiRegex.test(str);
+}
+
+function showAddCustomForm() {
+  newCustomDiff = 1;
+  document.getElementById('new-diff-display').textContent = diffDisplay(1);
+  const input = document.getElementById('custom-task-input');
+  input.value = '⭐ ';
+  document.getElementById('add-custom-form').style.display = 'block';
+  document.getElementById('add-custom-btn').style.display = 'none';
+  input.focus();
+  // Place cursor after emoji
+  input.setSelectionRange(2, 2);
+}
+
+function hideAddCustomForm() {
+  document.getElementById('add-custom-form').style.display = 'none';
+  document.getElementById('add-custom-btn').style.display = 'block';
+  document.getElementById('custom-task-input').value = '';
+}
+
+function changeNewDiff(delta) {
+  newCustomDiff = Math.max(1, Math.min(5, newCustomDiff + delta));
+  document.getElementById('new-diff-display').textContent = diffDisplay(newCustomDiff);
+}
+
+function saveCustomTask() {
+  let val = document.getElementById('custom-task-input').value.trim();
+  if (!val || val === '⭐') return;
+  // Ensure emoji prefix
+  if (!isEmoji(val)) val = '⭐ ' + val;
+  state.dailies.customTasks = state.dailies.customTasks || [];
+  state.dailies.customTasks.push({ label: val, diff: newCustomDiff, id: Date.now() });
+  saveState();
+  hideAddCustomForm();
+  renderDailyModal();
+}
+
+function deleteCustomTask(id) {
+  state.dailies.customTasks = (state.dailies.customTasks || []).filter(t => t.id !== id);
+  saveState();
+  renderDailyModal();
+}
+
+function buildCustomTaskRow(task) {
+  const isDone = state.dailies.done.includes(task.label);
+  const labelSafe = task.label.replace(/'/g, "\\'");
+  const badge = diffDisplay(task.diff);
+
+  const rightSide = editDiffMode
+    ? `<div class="diff-editor visible">
+         <button class="diff-stepper" onclick="changeCustomDiff(${task.id},-1)">−</button>
+         <span class="diff-badge">${badge}</span>
+         <button class="diff-stepper" onclick="changeCustomDiff(${task.id},+1)">+</button>
+       </div>
+       <button class="custom-task-row-delete" onclick="deleteCustomTask(${task.id})" title="Remove">✕</button>`
+    : `<span class="diff-badge diff-badge-tap" onclick="toggleEditDiff()" title="Tap to edit difficulty">${badge}</span>`;
+
+  return `
+    <div class="daily-task-row ${isDone ? 'done-today' : ''}" data-diff="${task.diff}">
+      <button class="daily-check" onclick="toggleDailyDone('${labelSafe}')">${isDone ? '✓' : ''}</button>
+      <span class="daily-task-label" style="flex:1;">${task.label}</span>
+      ${rightSide}
+    </div>`;
+}
+
+function changeCustomDiff(id, delta) {
+  const task = (state.dailies.customTasks || []).find(t => t.id === id);
+  if (!task) return;
+  task.diff = Math.max(1, Math.min(5, task.diff + delta));
+  saveState();
+  renderDailyModal();
+}
+
+// Auto-refill star emoji on blur if missing
+document.addEventListener('blur', (e) => {
+  if (e.target.id !== 'custom-task-input') return;
+  const val = e.target.value.trim();
+  if (val && !isEmoji(val)) {
+    e.target.value = '⭐ ' + val;
+  }
+}, true);
+
+function openDailyModal() {
+  renderDailyModal();
+  document.getElementById('daily-modal').classList.add('active');
+}
+
+function closeDailyModal() {
+  document.getElementById('daily-modal').classList.remove('active');
 }
 
 // ============================================================
